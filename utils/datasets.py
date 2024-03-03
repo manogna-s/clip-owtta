@@ -1,9 +1,11 @@
 import os
 import sys
 import json
+import random
 import torch
 import torchvision
 from PIL import Image
+from typing import Sequence, Callable, Optional
 
 class CIFAR10(torchvision.datasets.CIFAR10):
     def __init__(self, *args, **kwargs):
@@ -30,6 +32,51 @@ class CIFAR100(torchvision.datasets.CIFAR100):
         else:
             image = [image, index]
         return image, target
+
+
+class VISDA(torch.utils.data.Dataset):
+    def __init__(self, root: str, label_files: Sequence[str], transform: Optional[Callable] = None, tesize=10000):
+        self.image_root = root
+        self.label_files = label_files
+        self.transform = transform
+
+        self.samples = self.build_index(label_file=label_files, tesize=10000) 
+
+    def build_index(self, label_file, tesize):
+        """Build a list of <image path, class label, domain name> items.
+        Input:
+            label_file: Path to the file containing the image label pairs
+        Returns:
+            item_list: A list of <image path, class label> items.
+        """
+        with open(label_file, "r") as file:
+            tmp_items = [line.strip().split() for line in file if line]
+        random.shuffle(tmp_items)
+        tmp_items = tmp_items[:tesize]
+
+        item_list = []
+        for img_file, label in tmp_items:
+            img_file = f"{os.sep}".join(img_file.split("/"))
+            img_path = os.path.join(self.image_root, img_file)
+            item_list.append((img_path, int(label)))
+
+        return item_list
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        img_path, label = self.samples[idx]
+        image = Image.open(img_path).convert("RGB")
+        if self.transform:
+            image = self.transform(image)
+        
+        if type(image) == list:
+            image.append(idx)
+        else:
+            image = [image, idx]
+
+        return image, label
       
 class CIFAR100_openset(torchvision.datasets.CIFAR100):
     def __init__(self, tesize=10000, ratio=1, *args, **kwargs):

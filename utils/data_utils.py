@@ -1,5 +1,5 @@
 from utils.datasets import CIFAR10, CIFAR100, CIFAR100_openset, CIFAR10_openset, \
-     noise_dataset, MNIST_openset, SVHN_openset, TinyImageNet_OOD_nonoverlap, ImageNetR
+     noise_dataset, MNIST_openset, SVHN_openset, TinyImageNet_OOD_nonoverlap, ImageNetR, VISDA
 import json
 import torch
 import os
@@ -149,9 +149,6 @@ def prepare_ood_test_data(args, te_transforms):
     elif args.dataset == 'cifar100OOD':
         
         tesize = 10000
-        # self.classnames =  json.load(open('/home/manogna/TTA/PromptAlign/data/ood/cifar100_labels.json','r'))
-        # self.lab2cname = self.classnames
-        # print(self.classnames)
         ID_dataset = 'cifar100'
         data_dict['ID_class_descriptions'] = json.load(open(f'/home/manogna/TTA/PromptAlign/data/ood/prompt_templates/{ID_dataset}_prompts_full.json'))
         data_dict['ID_classes'] = list(data_dict['ID_class_descriptions'].keys())
@@ -273,6 +270,34 @@ def prepare_ood_test_data(args, te_transforms):
             else:
                 raise
     
+    elif args.dataset == "VisdaOOD":
+        tesize = 10000
+        ID_dataset = 'visda'
+        data_dict['ID_class_descriptions'] = json.load(open(f'/home/manogna/TTA/PromptAlign/data/ood/prompt_templates/{ID_dataset}_prompts_full.json'))
+        data_dict['ID_classes'] = list(data_dict['ID_class_descriptions'].keys())
+        data_dict['N_classes'] = len(data_dict['ID_classes'])
+        data_dict['templates'] = cifar_templates
+        print(data_dict)
+
+        testset = VISDA(root= f'{args.dataroot}/visda-2017', label_files=f'{args.dataroot}/visda-2017/validation_list.txt' , transform=te_transforms, tesize=tesize)
+
+        if True: 
+
+            if args.strong_OOD == 'MNIST':
+                te_rize = transforms.Compose([transforms.Resize(size=(32, 32)), transforms.Grayscale(3), te_transforms ])
+                noise = MNIST_openset(root=args.dataroot,
+                            train=True, download=True, transform=te_rize, tesize=tesize, ratio=args.strong_ratio)
+
+                teset = torch.utils.data.ConcatDataset([testset,noise])
+            
+            elif args.strong_OOD =='SVHN': 
+                te_rize = transforms.Compose([te_transforms ])
+                noise = SVHN_openset(root=args.dataroot,
+                            split='train', download=True, transform=te_rize, tesize=tesize, ratio=args.strong_ratio)
+                teset = torch.utils.data.ConcatDataset([testset,noise])
+            
+            print(len(testset), len(noise), len(teset))
+
     ID_OOD_loader = torch.utils.data.DataLoader(teset, batch_size=args.batch_size, shuffle=True)
 
     return data_dict, teset, ID_OOD_loader
