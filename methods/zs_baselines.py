@@ -54,10 +54,13 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
                 scores_txt = (logits_txt * 100).softmax(1)
                 msp_txt, _ = scores_txt.max(1)
                 maxlogit_txt, _ = logits_txt.max(1)
+                energy = torch.logsumexp(logits_txt * 100, 1)/100
+
                 conf_txt, pred_txt = torch.max(scores_txt, dim=1)
 
                 best_thresh = ood_thresh
-                ood_score= {'msp': msp_txt, 'maxlogit': maxlogit_txt}
+                ood_score= {'msp': msp_txt, 'maxlogit': maxlogit_txt, 'energy': energy}
+
                 if ood_thresh == 'otsu':
                     threshold_range = np.arange(0,1,0.01)
                     ood_scores.extend(ood_score[ood_detect].tolist())
@@ -106,7 +109,7 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
     metrics_exp['ACC_HM'] = HM(metrics_exp['ACC_ID'], metrics_exp['ACC_OOD'])
 
     print(f'\n\n')
-    print(args.dataset, args.strong_OOD, tta_method)
+    print(args.dataset, args.strong_OOD, tta_method, ood_detect)
     print(f'Metrics: {metrics_exp}\n')
 
     print(f"Online evaluation: Top-1 accuracy: {top1:.4f}; Top-5 accuracy: {top5:.4f}")

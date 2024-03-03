@@ -59,10 +59,12 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
         logits = image_features @ classifier.T
         maxlogit_tta, pred_tta = logits.max(1)
         msp, _ = (logits * 100).softmax(1).max(1)
+        energy = torch.logsumexp(logits * 100, 1)/100
+
 
 
         best_thresh = ood_thresh
-        ood_score= {'msp': msp, 'maxlogit': maxlogit_tta}
+        ood_score= {'msp': msp, 'maxlogit': maxlogit_tta, 'energy': energy}
         if ood_thresh == 'otsu':
             threshold_range = np.arange(0,1,0.01)
             ood_scores.extend(ood_score[ood_detect].tolist())
@@ -128,7 +130,7 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
     metrics_exp['ACC_HM'] = HM(metrics_exp['ACC_ID'], metrics_exp['ACC_OOD'])
 
     print(f'\n\n')
-    print(args.dataset, args.strong_OOD, tta_method)
+    print(args.dataset, args.strong_OOD, tta_method, ood_detect)
     print(f"Final metrics: Top-1 accuracy: {top1:.4f}; Top-5 accuracy: {top5:.4f}")
     print(f'{metrics_exp}\n')
 
