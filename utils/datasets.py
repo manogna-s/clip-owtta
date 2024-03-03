@@ -7,6 +7,7 @@ import torchvision
 from PIL import Image
 from typing import Sequence, Callable, Optional
 
+# ID Datasets
 class CIFAR10(torchvision.datasets.CIFAR10):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -20,6 +21,7 @@ class CIFAR10(torchvision.datasets.CIFAR10):
             image = [image, index]
         return image, target
 
+
 class CIFAR100(torchvision.datasets.CIFAR100):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -32,6 +34,134 @@ class CIFAR100(torchvision.datasets.CIFAR100):
         else:
             image = [image, index]
         return image, target
+
+
+class ImageNetR(torch.utils.data.Dataset):
+    def __init__(self, root, train=True, transform=None,list=True,ratio=1, tesize=10000):
+        self.Train = True
+        self.list=list
+        self.root_dir = os.path.join(root, 'imagenet_r')
+        self.transform = transform
+        self.train_dir = os.path.join(self.root_dir, "data")
+        self.val_dir = os.path.join(self.root_dir, "data")
+        self.ratio = ratio
+        
+        self.class_descriptions = json.load(open(f'/home/manogna/TTA/PromptAlign/data/ood/prompt_templates/imagenet_prompts_full.json'))
+        
+        words_file = os.path.join(self.root_dir, "words.txt")
+        wnids_file = os.path.join(self.root_dir, "wnids.txt")
+
+        self.set_nids = set()
+        self.class_list = []
+        with open(wnids_file, 'r') as fo:
+            data = fo.readlines()
+            for entry in data:
+                self.set_nids.add(entry.strip("\n"))
+                self.class_list.append(entry.strip("\n"))
+
+        self.class_to_label = {}
+        with open(words_file, 'r') as fo:
+            data = fo.readlines()
+            for entry in data:
+                words = entry.split("\t")
+                if words[0] in self.set_nids:
+                    self.class_to_label[words[0]] = (words[1].strip("\n").split(","))[0]
+        self.classnames = self.class_to_label.values()
+
+        if (self.Train):
+            self._create_class_idx_dict_train()
+        else:
+            self._create_class_idx_dict_val()
+
+        self._make_dataset(self.Train, tesize=tesize)
+
+
+    def _create_class_idx_dict_train(self):
+        if sys.version_info >= (3, 5):
+            classes = [d.name for d in os.scandir(self.train_dir) if d.is_dir()]
+        else:
+            classes = [d for d in os.listdir(self.train_dir) if os.path.isdir(os.path.join(train_dir, d))]
+        classes = sorted(classes)
+        num_images = 0
+        temp=[]
+        for i in range(20):
+            temp.append(0)
+        for root, dirs, files in os.walk(self.train_dir):
+            for f in files:
+                if f.endswith(".jpg"):
+                    num_images = num_images + 1
+
+        self.len_dataset = num_images;
+
+        self.tgt_idx_to_class = {i: classes[i] for i in range(len(classes))}
+        self.class_to_tgt_idx = {classes[i]: i for i in range(len(classes))}
+
+    def _create_class_idx_dict_val(self):
+        val_image_dir = os.path.join(self.val_dir, "images")
+        if sys.version_info >= (3, 5):
+            images = [d.name for d in os.scandir(val_image_dir) if d.is_file()]
+        else:
+            images = [d for d in os.listdir(val_image_dir) if os.path.isfile(os.path.join(train_dir, d))]
+        val_annotations_file = os.path.join(self.val_dir, "val_annotations.txt")
+        self.val_img_to_class = {}
+        set_of_classes = set()
+        with open(val_annotations_file, 'r') as fo:
+            entry = fo.readlines()
+            for data in entry:
+                words = data.split("\t")
+                if words[1] in self.class_list:
+                    self.val_img_to_class[words[0]] = words[1]
+                    set_of_classes.add(words[1])
+
+        self.len_dataset = len(list(self.val_img_to_class.keys()))
+        classes = sorted(list(set_of_classes))
+        self.class_to_tgt_idx = {classes[i]: i for i in range(len(classes))}
+        self.tgt_idx_to_class = {i: classes[i] for i in range(len(classes))}
+
+    def _make_dataset(self, Train=True, tesize=10000):
+        self.images = []
+        if Train:
+            img_root_dir = self.train_dir
+            list_of_dirs = [target for target in self.class_to_tgt_idx.keys()]
+        else:
+            img_root_dir = self.val_dir
+            list_of_dirs = ["images"]
+        temp=[]
+        for i in range(20):
+            temp.append(0)
+
+        for root, _, files in os.walk(self.train_dir):
+            for fname in sorted(files):
+                if (fname.endswith(".jpg")): 
+                    path = os.path.join(root, fname)
+                    item = (path, self.class_to_tgt_idx[root.split('/')[-1]])
+                    self.images.append(item)
+        random.shuffle(self.images)
+        self.images = self.images[:tesize]
+        self.len_dataset = len(self.images)
+        print('len',len(self.images))
+
+    def return_label(self, idx):
+        return [self.class_to_label[self.tgt_idx_to_class[i.item()]] for i in idx]
+
+    def __len__(self):
+        return int(self.len_dataset*self.ratio)
+
+    def __getitem__(self, idx:int):
+        img_path, tgt = self.images[idx]
+        with open(img_path, 'rb') as f:
+            sample = Image.open(img_path)
+            sample = sample.convert('RGB')
+        if self.transform is not None:
+            sample = self.transform(sample)
+        index = idx
+        if self.list:
+            if type(sample) == list:
+                sample.append(index)
+            else:
+                sample = [sample, index]
+
+        return sample, tgt
 
 
 class VISDA(torch.utils.data.Dataset):
@@ -77,7 +207,9 @@ class VISDA(torch.utils.data.Dataset):
             image = [image, idx]
 
         return image, label
-      
+
+
+# OOD Datasets
 class CIFAR100_openset(torchvision.datasets.CIFAR100):
     def __init__(self, tesize=10000, ratio=1, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -93,6 +225,7 @@ class CIFAR100_openset(torchvision.datasets.CIFAR100):
             image = [image, index]
         return image, target
 
+
 class CIFAR10_openset(torchvision.datasets.CIFAR10):
     def __init__(self, tesize=10000, ratio=1, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -107,6 +240,7 @@ class CIFAR10_openset(torchvision.datasets.CIFAR10):
         else:
             image = [image, index]
         return image, target
+
 
 class noise_dataset(torch.utils.data.Dataset):
     def __init__(self, transform,ratio=1): 
@@ -127,6 +261,7 @@ class noise_dataset(torch.utils.data.Dataset):
 
         return self.number
 
+
 class MNIST_openset(torchvision.datasets.MNIST):
     def __init__(self, *args, tesize=10000, ratio = 1 , **kwargs):
         super().__init__(*args, **kwargs)
@@ -142,6 +277,7 @@ class MNIST_openset(torchvision.datasets.MNIST):
             image = [image, index]
         return image, target
 
+
 class SVHN_openset(torchvision.datasets.SVHN):
     def __init__(self, *args, tesize=10000, ratio = 1 , **kwargs):
         super().__init__(*args, **kwargs)
@@ -156,6 +292,7 @@ class SVHN_openset(torchvision.datasets.SVHN):
         else:
             image = [image, index]
         return image, target
+
 
 class TinyImageNet_OOD_nonoverlap(torch.utils.data.Dataset):
     def __init__(self, root, train=True, transform=None,list=True,ratio=1):
@@ -298,128 +435,3 @@ class TinyImageNet_OOD_nonoverlap(torch.utils.data.Dataset):
 
         return sample, tgt
 
-
-class ImageNetR(torch.utils.data.Dataset):
-    def __init__(self, root, train=True, transform=None,list=True,ratio=1):
-        self.Train = True
-        self.list=list
-        self.root_dir = os.path.join(root, 'imagenet_r')
-        self.transform = transform
-        self.train_dir = os.path.join(self.root_dir, "data")
-        self.val_dir = os.path.join(self.root_dir, "data")
-        self.ratio = ratio
-        
-        self.class_descriptions = json.load(open(f'/home/manogna/TTA/PromptAlign/data/ood/prompt_templates/imagenet_prompts_full.json'))
-        
-        words_file = os.path.join(self.root_dir, "words.txt")
-        wnids_file = os.path.join(self.root_dir, "wnids.txt")
-
-        self.set_nids = set()
-        self.class_list = []
-        with open(wnids_file, 'r') as fo:
-            data = fo.readlines()
-            for entry in data:
-                self.set_nids.add(entry.strip("\n"))
-                self.class_list.append(entry.strip("\n"))
-
-        self.class_to_label = {}
-        with open(words_file, 'r') as fo:
-            data = fo.readlines()
-            for entry in data:
-                words = entry.split("\t")
-                if words[0] in self.set_nids:
-                    self.class_to_label[words[0]] = (words[1].strip("\n").split(","))[0]
-        self.classnames = self.class_to_label.values()
-
-        if (self.Train):
-            self._create_class_idx_dict_train()
-        else:
-            self._create_class_idx_dict_val()
-
-        self._make_dataset(self.Train)
-
-
-    def _create_class_idx_dict_train(self):
-        if sys.version_info >= (3, 5):
-            classes = [d.name for d in os.scandir(self.train_dir) if d.is_dir()]
-        else:
-            classes = [d for d in os.listdir(self.train_dir) if os.path.isdir(os.path.join(train_dir, d))]
-        classes = sorted(classes)
-        num_images = 0
-        temp=[]
-        for i in range(20):
-            temp.append(0)
-        for root, dirs, files in os.walk(self.train_dir):
-            for f in files:
-                if f.endswith(".jpg"):
-                    num_images = num_images + 1
-
-        self.len_dataset = num_images;
-
-        self.tgt_idx_to_class = {i: classes[i] for i in range(len(classes))}
-        self.class_to_tgt_idx = {classes[i]: i for i in range(len(classes))}
-
-    def _create_class_idx_dict_val(self):
-        val_image_dir = os.path.join(self.val_dir, "images")
-        if sys.version_info >= (3, 5):
-            images = [d.name for d in os.scandir(val_image_dir) if d.is_file()]
-        else:
-            images = [d for d in os.listdir(val_image_dir) if os.path.isfile(os.path.join(train_dir, d))]
-        val_annotations_file = os.path.join(self.val_dir, "val_annotations.txt")
-        self.val_img_to_class = {}
-        set_of_classes = set()
-        with open(val_annotations_file, 'r') as fo:
-            entry = fo.readlines()
-            for data in entry:
-                words = data.split("\t")
-                if words[1] in self.class_list:
-                    self.val_img_to_class[words[0]] = words[1]
-                    set_of_classes.add(words[1])
-
-        self.len_dataset = len(list(self.val_img_to_class.keys()))
-        classes = sorted(list(set_of_classes))
-        self.class_to_tgt_idx = {classes[i]: i for i in range(len(classes))}
-        self.tgt_idx_to_class = {i: classes[i] for i in range(len(classes))}
-
-    def _make_dataset(self, Train=True):
-        self.images = []
-        if Train:
-            img_root_dir = self.train_dir
-            list_of_dirs = [target for target in self.class_to_tgt_idx.keys()]
-        else:
-            img_root_dir = self.val_dir
-            list_of_dirs = ["images"]
-        temp=[]
-        for i in range(20):
-            temp.append(0)
-
-        for root, _, files in os.walk(self.train_dir):
-            for fname in sorted(files):
-                # print(root, fname)
-                if (fname.endswith(".jpg")): #and fname.split("_")[0] in self.classnames:
-                    path = os.path.join(root, fname)
-                    item = (path, self.class_to_tgt_idx[root.split('/')[-1]])
-                    self.images.append(item)
-        print('len',len(self.images))
-
-    def return_label(self, idx):
-        return [self.class_to_label[self.tgt_idx_to_class[i.item()]] for i in idx]
-
-    def __len__(self):
-        return int(self.len_dataset*self.ratio)
-
-    def __getitem__(self, idx:int):
-        img_path, tgt = self.images[idx]
-        with open(img_path, 'rb') as f:
-            sample = Image.open(img_path)
-            sample = sample.convert('RGB')
-        if self.transform is not None:
-            sample = self.transform(sample)
-        index = idx
-        if self.list:
-            if type(sample) == list:
-                sample.append(index)
-            else:
-                sample = [sample, index]
-
-        return sample, tgt

@@ -12,7 +12,7 @@ import numpy as np
 from clip import clip
 from utils.data_utils import prepare_ood_test_data
 from utils.clip_tta_utils import get_classifiers
-from methods import zs_baselines, ft_pl_baseline, ft_pl_neg_proto_bank_v0
+from methods import zs_baselines, ft_pl_baseline, ft_pl_neg_proto_bank_v0, ft_pl_neg_proto_bank_v1
 
 
 def load_clip_to_cpu():
@@ -74,7 +74,7 @@ parser.add_argument('--classifier_type', default='txt', type=str)
 
 
 tta_methods = {'zsclip': zs_baselines.tta_id_ood, 'ft_pl_baseline': ft_pl_baseline.tta_id_ood, \
-    'ft_pl_neg_proto_bank_v0': ft_pl_neg_proto_bank_v0.tta_id_ood }
+    'ft_pl_neg_proto_bank_v0': ft_pl_neg_proto_bank_v0.tta_id_ood, 'ft_pl_neg_proto_bank_v1': ft_pl_neg_proto_bank_v1.tta_id_ood  }
     
 # ----------- Args and Dataloader ------------
 args = parser.parse_args()

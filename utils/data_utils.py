@@ -219,9 +219,9 @@ def prepare_ood_test_data(args, te_transforms):
             data_dict['ID_class_descriptions'][classname] = imagenet_descriptions[classname]
         # json.dump(data_dict['ID_class_descriptions'], open(f'/home/manogna/TTA/PromptAlign/data/ood/prompt_templates/imagenetr_prompts_full.json', 'w'))
 
-        testset = ImageNetR(root= args.dataroot, transform=te_transforms, train=True)
+        tesize = 10000
+        testset = ImageNetR(root= args.dataroot, transform=te_transforms, train=True, tesize=tesize)
 
-        tesize = 30000
         if True: 
 
             if args.strong_OOD == 'MNIST':
@@ -277,7 +277,6 @@ def prepare_ood_test_data(args, te_transforms):
         data_dict['ID_classes'] = list(data_dict['ID_class_descriptions'].keys())
         data_dict['N_classes'] = len(data_dict['ID_classes'])
         data_dict['templates'] = cifar_templates
-        print(data_dict)
 
         testset = VISDA(root= f'{args.dataroot}/visda-2017', label_files=f'{args.dataroot}/visda-2017/validation_list.txt' , transform=te_transforms, tesize=tesize)
 
