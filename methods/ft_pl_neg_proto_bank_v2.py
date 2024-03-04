@@ -37,7 +37,7 @@ def compute_os_variance_stats(os, th):
     # if one the classes is empty, eg all pixels are below or above the threshold, that threshold will not be considered
     # in the search for the best threshold
     if weight1 == 0 or weight0 == 0:
-        return np.inf, None
+        return np.inf, {'mu0': 0, 'mu1': 1, 'var0': 0, 'var1': 0}
 
     # find all pixels belonging to each class
     val_pixels1 = os[thresholded_os == 1]
@@ -137,21 +137,23 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
 
         ID_sel = ID_pred * (msp > args.pl_thresh) 
 
-        if ID_pred[0].item():
+        if ID_pred[0].item() and ood_score[ood_detect].item()>stats['mu1']:
             proto_bank['ID'].append(image_features_raw.detach())
             proto_bank['ID'] = proto_bank['ID'][-queue_length:]
-        if OOD_pred[0].item():
+        if OOD_pred[0].item() and ood_score[ood_detect].item()<stats['mu0']:
             proto_bank['OOD'].append(image_features_raw.detach())
             proto_bank['OOD'] = proto_bank['OOD'][-queue_length:]
 
+        loss = 0
         if ID_sel.item():
 
-            loss = nn.CrossEntropyLoss()(logits[ID_sel], pred_tta[ID_sel])
+            loss += nn.CrossEntropyLoss()(logits[ID_sel], pred_tta[ID_sel])
 
-            if i>queue_length:
-                p_ood = normal_dist(ood_score[ood_detect].item(), stats['mu0'], np.sqrt(stats['var0']))
-                p_id = normal_dist(ood_score[ood_detect].item(), stats['mu1'], np.sqrt(stats['var1']))
-                if ID_pred[0].item(): # and p_ood>0.75:
+        if i>queue_length:
+            # p_ood = normal_dist(ood_score[ood_detect].item(), stats['mu0'], np.sqrt(stats['var0']))
+            # p_id = normal_dist(ood_score[ood_detect].item(), stats['mu1'], np.sqrt(stats['var1']))
+            if ood_score[ood_detect].item()>stats['mu1'] or ood_score[ood_detect].item()<stats['mu0']:
+                if ID_pred[0].item():
                     pos_features = torch.vstack(proto_bank['ID'])
                     neg_features = torch.vstack(proto_bank['OOD'])
 
@@ -176,6 +178,7 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
                 l_simclr = nn.CrossEntropyLoss()(simclr_logits, torch.zeros((k,), dtype=torch.long).cuda())
                 loss += l_simclr
 
+        if loss:
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
