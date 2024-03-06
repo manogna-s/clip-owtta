@@ -300,3 +300,46 @@ def prepare_ood_test_data(args, te_transforms):
     ID_OOD_loader = torch.utils.data.DataLoader(teset, batch_size=args.batch_size, shuffle=True)
 
     return data_dict, teset, ID_OOD_loader
+
+
+# TPT Transforms
+
+# AugMix Transforms
+def get_preaugment():
+    return transforms.Compose([
+            transforms.RandomResizedCrop(224),
+            transforms.RandomHorizontalFlip(),
+        ])
+
+def augmix(image, preprocess, aug_list, severity=1):
+    preaugment = get_preaugment()   # Resizing with scaling and ratio
+    x_orig = preaugment(image)
+    x_processed = preprocess(x_orig)
+    if len(aug_list) == 0:
+        return x_processed
+    w = np.float32(np.random.dirichlet([1.0, 1.0, 1.0]))
+    m = np.float32(np.random.beta(1.0, 1.0))
+
+    mix = torch.zeros_like(x_processed)
+    for i in range(3):
+        x_aug = x_orig.copy()
+        for _ in range(np.random.randint(1, 4)):
+            x_aug = np.random.choice(aug_list)(x_aug, severity)
+        mix += w[i] * preprocess(x_aug)
+    mix = m * x_processed + (1 - m) * mix
+    return mix
+
+
+class AugMixAugmenter(object):
+    def __init__(self, base_transform, preprocess, n_views=2, augmix=False, 
+                    severity=1):
+        self.base_transform = base_transform
+        self.preprocess = preprocess
+        self.n_views = n_views
+        self.aug_list = []
+        self.severity = severity
+        
+    def __call__(self, x):
+        image = self.preprocess(self.base_transform(x))
+        views = [augmix(x, self.preprocess, self.aug_list, self.severity) for _ in range(self.n_views)]
+        return [image] + views

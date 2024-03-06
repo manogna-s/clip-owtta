@@ -1,0 +1,314 @@
+Namespace(N_m=512, batch_size=1, classifier_type='txt', corruption='snow', dataroot='/home/manogna/TTA/PromptAlign/data/ood', dataset='ImagenetROOD', level=5, model='clip', model_type='ViT-B/16', ood_detector='msp', out_dir='./logs', pl_thresh=0.7, seed=0, strong_OOD='MNIST', strong_ratio=1, tta_method='ft_pl_baseline', workers=4)
+
+
+len 10000
+dict_values(['goldfish', 'great white shark', 'hammerhead shark', 'stingray', 'hen', 'ostrich', 'goldfinch', 'junco', 'bald eagle', 'vulture', 'smooth newt', 'axolotl', 'tree frog', 'green iguana', 'chameleon', 'Indian cobra', 'scorpion', 'tarantula', 'centipede', 'peafowl', 'lorikeet', 'hummingbird', 'toucan', 'duck', 'goose', 'black swan', 'koala', 'jellyfish', 'snail', 'American lobster', 'hermit crab', 'flamingo', 'great egret', 'pelican', 'king penguin', 'grey whale', 'killer whale', 'sea lion', 'Chihuahua', 'Shih Tzu', 'Afghan Hound', 'Basset Hound', 'Beagle', 'Bloodhound', 'Italian Greyhound', 'Whippet', 'Weimaraner', 'Yorkshire Terrier', 'Boston Terrier', 'Scottish Terrier', 'West Highland White Terrier', 'Golden Retriever', 'Labrador Retriever', 'Cocker Spaniel', 'collie', 'Border Collie', 'Rottweiler', 'German Shepherd Dog', 'Boxer', 'French Bulldog', 'St. Bernard', 'Siberian Husky', 'Dalmatian', 'pug', 'Pomeranian', 'Chow Chow', 'Pembroke Welsh Corgi', 'Toy Poodle', 'Standard Poodle', 'grey wolf', 'hyena', 'red fox', 'tabby cat', 'leopard', 'snow leopard', 'lion', 'tiger', 'cheetah', 'polar bear', 'meerkat', 'ladybug', 'fly', 'bee', 'ant', 'grasshopper', 'cockroach', 'praying mantis', 'dragonfly', 'monarch butterfly', 'starfish', 'cottontail rabbit', 'porcupine', 'fox squirrel', 'beaver', 'guinea pig', 'zebra', 'pig', 'hippopotamus', 'bison', 'gazelle', 'llama', 'skunk', 'badger', 'orangutan', 'gorilla', 'chimpanzee', 'gibbon', 'baboon', 'giant panda', 'eel', 'clownfish', 'pufferfish', 'accordion', 'ambulance', 'assault rifle', 'backpack', 'barn', 'wheelbarrow', 'basketball', 'bathtub', 'lighthouse', 'beer glass', 'binoculars', 'birdhouse', 'bow tie', 'broom', 'bucket', 'cauldron', 'candle', 'cannon', 'canoe', 'carousel', 'castle', 'mobile phone', 'cowboy hat', 'electric guitar', 'fire truck', 'flute', 'gas mask or respirator', 'grand piano', 'guillotine', 'hammer', 'harmonica', 'harp', 'hatchet', 'jeep', 'joystick', 'lab coat', 'lawn mower', 'lipstick', 'mailbox', 'missile', 'mitten', 'parachute', 'pickup truck', 'pirate ship', 'revolver', 'rugby ball', 'sandal', 'saxophone', 'school bus', 'schooner', 'shield', 'soccer ball', 'space shuttle', 'spider web', 'steam locomotive', 'scarf', 'submarine', 'tank', 'tennis ball', 'tractor', 'trombone', 'vase', 'violin', 'military aircraft', 'wine bottle', 'ice cream', 'bagel', 'pretzel', 'cheeseburger', 'hot dog', 'cabbage', 'broccoli', 'cucumber', 'bell pepper', 'mushroom', 'Granny Smith apple', 'strawberry', 'lemon', 'pineapple', 'banana', 'pomegranate', 'pizza', 'burrito', 'espresso', 'volcano', 'baseball player', 'scuba diver', 'acorn'])
+len 10000
+10000 10000 20000
+
+Step 999: Top1: 0.7415; Top5: 0.9158
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7434869739478958, 'ACC_ID': 0.657314629258517, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 1999: Top1: 0.7359; Top5: 0.9075
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7379239465570401, 'ACC_ID': 0.6680369989722508, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 2999: Top1: 0.7361; Top5: 0.9092
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7369826435246996, 'ACC_ID': 0.6735647530040053, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 3999: Top1: 0.7264; Top5: 0.9044
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.726998491704374, 'ACC_ID': 0.6631473102061337, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 4999: Top1: 0.7310; Top5: 0.9074
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.731355252606255, 'ACC_ID': 0.6688051323175621, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 5999: Top1: 0.7358; Top5: 0.9085
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7361064891846921, 'ACC_ID': 0.6725457570715474, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 6999: Top1: 0.7386; Top5: 0.9093
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7389558232931727, 'ACC_ID': 0.6752725186460127, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 7999: Top1: 0.7366; Top5: 0.9066
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7368683096838436, 'ACC_ID': 0.6768732885237739, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 8999: Top1: 0.7403; Top5: 0.9080
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7405764966740577, 'ACC_ID': 0.682039911308204, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 9999: Top1: 0.7385; Top5: 0.9087
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7387387387387387, 'ACC_ID': 0.6788788788788789, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 10999: Top1: 0.7380; Top5: 0.9107
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7381732168850073, 'ACC_ID': 0.6764919941775837, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 11999: Top1: 0.7383; Top5: 0.9129
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7384846461949266, 'ACC_ID': 0.677570093457944, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 12999: Top1: 0.7412; Top5: 0.9143
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7412544305748189, 'ACC_ID': 0.6802280782863307, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 13999: Top1: 0.7435; Top5: 0.9152
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7435384835070684, 'ACC_ID': 0.6827074111095245, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 14999: Top1: 0.7435; Top5: 0.9166
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7436034115138592, 'ACC_ID': 0.6828358208955224, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 15999: Top1: 0.7429; Top5: 0.9161
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7429608309348017, 'ACC_ID': 0.6835189588286823, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 16999: Top1: 0.7426; Top5: 0.9155
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7427361486883896, 'ACC_ID': 0.6835666392189155, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 17999: Top1: 0.7428; Top5: 0.9145
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7429844097995546, 'ACC_ID': 0.6838530066815145, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 18999: Top1: 0.7446; Top5: 0.9148
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7446381405176967, 'ACC_ID': 0.6855784469096672, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 19999: Top1: 0.7436; Top5: 0.9146
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7437, 'ACC_ID': 0.6846, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+
+
+ImagenetROOD MNIST ft_pl_txt msp
+Final metrics: Top-1 accuracy: 74.3600; Top-5 accuracy: 91.4600
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0.99397128, 'FPR95': 0.0326, 'ACC_ALL': 0.7437, 'ACC_ID': 0.6846, 'ACC_OOD': 0.9967, 'ACC_HM': 0.8116824124189614}
+
+
+
+
+
+Namespace(N_m=512, batch_size=1, classifier_type='txt', corruption='snow', dataroot='/home/manogna/TTA/PromptAlign/data/ood', dataset='ImagenetROOD', level=5, model='clip', model_type='ViT-B/16', ood_detector='maxlogit', out_dir='./logs', pl_thresh=0.7, seed=0, strong_OOD='MNIST', strong_ratio=1, tta_method='ft_pl_baseline', workers=4)
+
+
+len 10000
+dict_values(['goldfish', 'great white shark', 'hammerhead shark', 'stingray', 'hen', 'ostrich', 'goldfinch', 'junco', 'bald eagle', 'vulture', 'smooth newt', 'axolotl', 'tree frog', 'green iguana', 'chameleon', 'Indian cobra', 'scorpion', 'tarantula', 'centipede', 'peafowl', 'lorikeet', 'hummingbird', 'toucan', 'duck', 'goose', 'black swan', 'koala', 'jellyfish', 'snail', 'American lobster', 'hermit crab', 'flamingo', 'great egret', 'pelican', 'king penguin', 'grey whale', 'killer whale', 'sea lion', 'Chihuahua', 'Shih Tzu', 'Afghan Hound', 'Basset Hound', 'Beagle', 'Bloodhound', 'Italian Greyhound', 'Whippet', 'Weimaraner', 'Yorkshire Terrier', 'Boston Terrier', 'Scottish Terrier', 'West Highland White Terrier', 'Golden Retriever', 'Labrador Retriever', 'Cocker Spaniel', 'collie', 'Border Collie', 'Rottweiler', 'German Shepherd Dog', 'Boxer', 'French Bulldog', 'St. Bernard', 'Siberian Husky', 'Dalmatian', 'pug', 'Pomeranian', 'Chow Chow', 'Pembroke Welsh Corgi', 'Toy Poodle', 'Standard Poodle', 'grey wolf', 'hyena', 'red fox', 'tabby cat', 'leopard', 'snow leopard', 'lion', 'tiger', 'cheetah', 'polar bear', 'meerkat', 'ladybug', 'fly', 'bee', 'ant', 'grasshopper', 'cockroach', 'praying mantis', 'dragonfly', 'monarch butterfly', 'starfish', 'cottontail rabbit', 'porcupine', 'fox squirrel', 'beaver', 'guinea pig', 'zebra', 'pig', 'hippopotamus', 'bison', 'gazelle', 'llama', 'skunk', 'badger', 'orangutan', 'gorilla', 'chimpanzee', 'gibbon', 'baboon', 'giant panda', 'eel', 'clownfish', 'pufferfish', 'accordion', 'ambulance', 'assault rifle', 'backpack', 'barn', 'wheelbarrow', 'basketball', 'bathtub', 'lighthouse', 'beer glass', 'binoculars', 'birdhouse', 'bow tie', 'broom', 'bucket', 'cauldron', 'candle', 'cannon', 'canoe', 'carousel', 'castle', 'mobile phone', 'cowboy hat', 'electric guitar', 'fire truck', 'flute', 'gas mask or respirator', 'grand piano', 'guillotine', 'hammer', 'harmonica', 'harp', 'hatchet', 'jeep', 'joystick', 'lab coat', 'lawn mower', 'lipstick', 'mailbox', 'missile', 'mitten', 'parachute', 'pickup truck', 'pirate ship', 'revolver', 'rugby ball', 'sandal', 'saxophone', 'school bus', 'schooner', 'shield', 'soccer ball', 'space shuttle', 'spider web', 'steam locomotive', 'scarf', 'submarine', 'tank', 'tennis ball', 'tractor', 'trombone', 'vase', 'violin', 'military aircraft', 'wine bottle', 'ice cream', 'bagel', 'pretzel', 'cheeseburger', 'hot dog', 'cabbage', 'broccoli', 'cucumber', 'bell pepper', 'mushroom', 'Granny Smith apple', 'strawberry', 'lemon', 'pineapple', 'banana', 'pomegranate', 'pizza', 'burrito', 'espresso', 'volcano', 'baseball player', 'scuba diver', 'acorn'])
+len 10000
+10000 10000 20000
+
+Step 999: Top1: 0.7435; Top5: 0.9158
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7434869739478958, 'ACC_ID': 0.5370741482965932, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 1999: Top1: 0.7369; Top5: 0.9075
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7379239465570401, 'ACC_ID': 0.5334018499486125, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 2999: Top1: 0.7348; Top5: 0.9092
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7356475300400535, 'ACC_ID': 0.534712950600801, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 3999: Top1: 0.7248; Top5: 0.9044
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7254901960784313, 'ACC_ID': 0.5168426344896934, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 4999: Top1: 0.7298; Top5: 0.9074
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7301523656776263, 'ACC_ID': 0.5208500400962309, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 5999: Top1: 0.7351; Top5: 0.9085
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7354409317803661, 'ACC_ID': 0.5158069883527454, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 6999: Top1: 0.7383; Top5: 0.9093
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7386689615605279, 'ACC_ID': 0.5160642570281124, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 7999: Top1: 0.7364; Top5: 0.9066
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7366193676873288, 'ACC_ID': 0.5175504107542942, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 8999: Top1: 0.7399; Top5: 0.9080
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7401330376940133, 'ACC_ID': 0.5177383592017738, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 9999: Top1: 0.7379; Top5: 0.9091
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7381381381381381, 'ACC_ID': 0.518918918918919, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 10999: Top1: 0.7378; Top5: 0.9108
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7379912663755459, 'ACC_ID': 0.514919941775837, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 11999: Top1: 0.7384; Top5: 0.9130
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7386515353805073, 'ACC_ID': 0.5143524699599465, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 12999: Top1: 0.7417; Top5: 0.9141
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7417167514254893, 'ACC_ID': 0.5144089998458931, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 13999: Top1: 0.7438; Top5: 0.9153
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7438240753962587, 'ACC_ID': 0.5137798086534342, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 14999: Top1: 0.7440; Top5: 0.9167
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.744136460554371, 'ACC_ID': 0.5102611940298507, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 15999: Top1: 0.7436; Top5: 0.9163
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7437116756350894, 'ACC_ID': 0.5094481291452885, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 16999: Top1: 0.7434; Top5: 0.9155
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7435595812257382, 'ACC_ID': 0.5073520762263263, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 17999: Top1: 0.7436; Top5: 0.9144
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7437639198218263, 'ACC_ID': 0.5065701559020045, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 18999: Top1: 0.7452; Top5: 0.9148
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7452720549392499, 'ACC_ID': 0.505229793977813, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 19999: Top1: 0.7441; Top5: 0.9145
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7442, 'ACC_ID': 0.5038, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+
+
+ImagenetROOD MNIST ft_pl_txt maxlogit
+Final metrics: Top-1 accuracy: 74.4100; Top-5 accuracy: 91.4500
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0.8541681400000001, 'FPR95': 0.9906, 'ACC_ALL': 0.7442, 'ACC_ID': 0.5038, 'ACC_OOD': 0.9791, 'ACC_HM': 0.6652782790478118}
+
+
+
+
+
+Namespace(N_m=512, batch_size=1, classifier_type='txt', corruption='snow', dataroot='/home/manogna/TTA/PromptAlign/data/ood', dataset='ImagenetROOD', level=5, model='clip', model_type='ViT-B/16', ood_detector='msp', out_dir='./logs', pl_thresh=0.7, seed=0, strong_OOD='SVHN', strong_ratio=1, tta_method='ft_pl_baseline', workers=4)
+
+
+len 10000
+dict_values(['goldfish', 'great white shark', 'hammerhead shark', 'stingray', 'hen', 'ostrich', 'goldfinch', 'junco', 'bald eagle', 'vulture', 'smooth newt', 'axolotl', 'tree frog', 'green iguana', 'chameleon', 'Indian cobra', 'scorpion', 'tarantula', 'centipede', 'peafowl', 'lorikeet', 'hummingbird', 'toucan', 'duck', 'goose', 'black swan', 'koala', 'jellyfish', 'snail', 'American lobster', 'hermit crab', 'flamingo', 'great egret', 'pelican', 'king penguin', 'grey whale', 'killer whale', 'sea lion', 'Chihuahua', 'Shih Tzu', 'Afghan Hound', 'Basset Hound', 'Beagle', 'Bloodhound', 'Italian Greyhound', 'Whippet', 'Weimaraner', 'Yorkshire Terrier', 'Boston Terrier', 'Scottish Terrier', 'West Highland White Terrier', 'Golden Retriever', 'Labrador Retriever', 'Cocker Spaniel', 'collie', 'Border Collie', 'Rottweiler', 'German Shepherd Dog', 'Boxer', 'French Bulldog', 'St. Bernard', 'Siberian Husky', 'Dalmatian', 'pug', 'Pomeranian', 'Chow Chow', 'Pembroke Welsh Corgi', 'Toy Poodle', 'Standard Poodle', 'grey wolf', 'hyena', 'red fox', 'tabby cat', 'leopard', 'snow leopard', 'lion', 'tiger', 'cheetah', 'polar bear', 'meerkat', 'ladybug', 'fly', 'bee', 'ant', 'grasshopper', 'cockroach', 'praying mantis', 'dragonfly', 'monarch butterfly', 'starfish', 'cottontail rabbit', 'porcupine', 'fox squirrel', 'beaver', 'guinea pig', 'zebra', 'pig', 'hippopotamus', 'bison', 'gazelle', 'llama', 'skunk', 'badger', 'orangutan', 'gorilla', 'chimpanzee', 'gibbon', 'baboon', 'giant panda', 'eel', 'clownfish', 'pufferfish', 'accordion', 'ambulance', 'assault rifle', 'backpack', 'barn', 'wheelbarrow', 'basketball', 'bathtub', 'lighthouse', 'beer glass', 'binoculars', 'birdhouse', 'bow tie', 'broom', 'bucket', 'cauldron', 'candle', 'cannon', 'canoe', 'carousel', 'castle', 'mobile phone', 'cowboy hat', 'electric guitar', 'fire truck', 'flute', 'gas mask or respirator', 'grand piano', 'guillotine', 'hammer', 'harmonica', 'harp', 'hatchet', 'jeep', 'joystick', 'lab coat', 'lawn mower', 'lipstick', 'mailbox', 'missile', 'mitten', 'parachute', 'pickup truck', 'pirate ship', 'revolver', 'rugby ball', 'sandal', 'saxophone', 'school bus', 'schooner', 'shield', 'soccer ball', 'space shuttle', 'spider web', 'steam locomotive', 'scarf', 'submarine', 'tank', 'tennis ball', 'tractor', 'trombone', 'vase', 'violin', 'military aircraft', 'wine bottle', 'ice cream', 'bagel', 'pretzel', 'cheeseburger', 'hot dog', 'cabbage', 'broccoli', 'cucumber', 'bell pepper', 'mushroom', 'Granny Smith apple', 'strawberry', 'lemon', 'pineapple', 'banana', 'pomegranate', 'pizza', 'burrito', 'espresso', 'volcano', 'baseball player', 'scuba diver', 'acorn'])
+len 10000
+Using downloaded and verified file: /home/manogna/TTA/PromptAlign/data/ood/train_32x32.mat
+10000 10000 20000
+
+Step 999: Top1: 0.7415; Top5: 0.9158
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7434869739478958, 'ACC_ID': 0.655310621242485, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 1999: Top1: 0.7369; Top5: 0.9075
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7389516957862282, 'ACC_ID': 0.6608427543679343, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 2999: Top1: 0.7355; Top5: 0.9092
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7369826435246996, 'ACC_ID': 0.6615487316421896, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 3999: Top1: 0.7264; Top5: 0.9044
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7275012569130216, 'ACC_ID': 0.6495726495726496, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 4999: Top1: 0.7310; Top5: 0.9074
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7317562149157979, 'ACC_ID': 0.6563753007217321, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 5999: Top1: 0.7358; Top5: 0.9088
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7364392678868552, 'ACC_ID': 0.6599001663893511, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 6999: Top1: 0.7386; Top5: 0.9096
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7389558232931727, 'ACC_ID': 0.6617900172117039, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 7999: Top1: 0.7366; Top5: 0.9069
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7368683096838436, 'ACC_ID': 0.6641772467015186, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 8999: Top1: 0.7401; Top5: 0.9082
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7403547671840355, 'ACC_ID': 0.6689578713968958, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 9999: Top1: 0.7383; Top5: 0.9089
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7385385385385386, 'ACC_ID': 0.6648648648648648, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 10999: Top1: 0.7378; Top5: 0.9108
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7379912663755459, 'ACC_ID': 0.6622998544395924, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 11999: Top1: 0.7381; Top5: 0.9130
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7383177570093458, 'ACC_ID': 0.6628838451268357, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 12999: Top1: 0.7411; Top5: 0.9145
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7411003236245954, 'ACC_ID': 0.6665125597164432, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 13999: Top1: 0.7432; Top5: 0.9155
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.743252891617878, 'ACC_ID': 0.6689990004283878, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 14999: Top1: 0.7432; Top5: 0.9168
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7433368869936035, 'ACC_ID': 0.6691098081023454, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 15999: Top1: 0.7427; Top5: 0.9165
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7428356901514204, 'ACC_ID': 0.6688774871730697, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 16999: Top1: 0.7424; Top5: 0.9159
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7426185154687683, 'ACC_ID': 0.668980119985884, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 17999: Top1: 0.7426; Top5: 0.9147
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7428730512249443, 'ACC_ID': 0.6692650334075724, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 18999: Top1: 0.7444; Top5: 0.9150
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7445324881141046, 'ACC_ID': 0.6708927628103539, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 19999: Top1: 0.7434; Top5: 0.9148
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7436, 'ACC_ID': 0.6701, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+
+
+ImagenetROOD SVHN ft_pl_txt msp
+Final metrics: Top-1 accuracy: 74.3400; Top-5 accuracy: 91.4800
+{'Method': 'ft_pl_txt', 'OOD Detector': 'msp_plthresh07', 'AUC': 0.976183125, 'FPR95': 0.1383, 'ACC_ALL': 0.7436, 'ACC_ID': 0.6701, 'ACC_OOD': 0.9887, 'ACC_HM': 0.7988037979262117}
+
+
+
+
+
+Namespace(N_m=512, batch_size=1, classifier_type='txt', corruption='snow', dataroot='/home/manogna/TTA/PromptAlign/data/ood', dataset='ImagenetROOD', level=5, model='clip', model_type='ViT-B/16', ood_detector='maxlogit', out_dir='./logs', pl_thresh=0.7, seed=0, strong_OOD='SVHN', strong_ratio=1, tta_method='ft_pl_baseline', workers=4)
+
+
+len 10000
+dict_values(['goldfish', 'great white shark', 'hammerhead shark', 'stingray', 'hen', 'ostrich', 'goldfinch', 'junco', 'bald eagle', 'vulture', 'smooth newt', 'axolotl', 'tree frog', 'green iguana', 'chameleon', 'Indian cobra', 'scorpion', 'tarantula', 'centipede', 'peafowl', 'lorikeet', 'hummingbird', 'toucan', 'duck', 'goose', 'black swan', 'koala', 'jellyfish', 'snail', 'American lobster', 'hermit crab', 'flamingo', 'great egret', 'pelican', 'king penguin', 'grey whale', 'killer whale', 'sea lion', 'Chihuahua', 'Shih Tzu', 'Afghan Hound', 'Basset Hound', 'Beagle', 'Bloodhound', 'Italian Greyhound', 'Whippet', 'Weimaraner', 'Yorkshire Terrier', 'Boston Terrier', 'Scottish Terrier', 'West Highland White Terrier', 'Golden Retriever', 'Labrador Retriever', 'Cocker Spaniel', 'collie', 'Border Collie', 'Rottweiler', 'German Shepherd Dog', 'Boxer', 'French Bulldog', 'St. Bernard', 'Siberian Husky', 'Dalmatian', 'pug', 'Pomeranian', 'Chow Chow', 'Pembroke Welsh Corgi', 'Toy Poodle', 'Standard Poodle', 'grey wolf', 'hyena', 'red fox', 'tabby cat', 'leopard', 'snow leopard', 'lion', 'tiger', 'cheetah', 'polar bear', 'meerkat', 'ladybug', 'fly', 'bee', 'ant', 'grasshopper', 'cockroach', 'praying mantis', 'dragonfly', 'monarch butterfly', 'starfish', 'cottontail rabbit', 'porcupine', 'fox squirrel', 'beaver', 'guinea pig', 'zebra', 'pig', 'hippopotamus', 'bison', 'gazelle', 'llama', 'skunk', 'badger', 'orangutan', 'gorilla', 'chimpanzee', 'gibbon', 'baboon', 'giant panda', 'eel', 'clownfish', 'pufferfish', 'accordion', 'ambulance', 'assault rifle', 'backpack', 'barn', 'wheelbarrow', 'basketball', 'bathtub', 'lighthouse', 'beer glass', 'binoculars', 'birdhouse', 'bow tie', 'broom', 'bucket', 'cauldron', 'candle', 'cannon', 'canoe', 'carousel', 'castle', 'mobile phone', 'cowboy hat', 'electric guitar', 'fire truck', 'flute', 'gas mask or respirator', 'grand piano', 'guillotine', 'hammer', 'harmonica', 'harp', 'hatchet', 'jeep', 'joystick', 'lab coat', 'lawn mower', 'lipstick', 'mailbox', 'missile', 'mitten', 'parachute', 'pickup truck', 'pirate ship', 'revolver', 'rugby ball', 'sandal', 'saxophone', 'school bus', 'schooner', 'shield', 'soccer ball', 'space shuttle', 'spider web', 'steam locomotive', 'scarf', 'submarine', 'tank', 'tennis ball', 'tractor', 'trombone', 'vase', 'violin', 'military aircraft', 'wine bottle', 'ice cream', 'bagel', 'pretzel', 'cheeseburger', 'hot dog', 'cabbage', 'broccoli', 'cucumber', 'bell pepper', 'mushroom', 'Granny Smith apple', 'strawberry', 'lemon', 'pineapple', 'banana', 'pomegranate', 'pizza', 'burrito', 'espresso', 'volcano', 'baseball player', 'scuba diver', 'acorn'])
+len 10000
+Using downloaded and verified file: /home/manogna/TTA/PromptAlign/data/ood/train_32x32.mat
+10000 10000 20000
+
+Step 999: Top1: 0.7415; Top5: 0.9158
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7414829659318637, 'ACC_ID': 0.5370741482965932, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 1999: Top1: 0.7359; Top5: 0.9075
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.736896197327852, 'ACC_ID': 0.5344295991778006, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 2999: Top1: 0.7341; Top5: 0.9092
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7349799732977303, 'ACC_ID': 0.5367156208277704, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 3999: Top1: 0.7243; Top5: 0.9044
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7249874308697838, 'ACC_ID': 0.5258924082453494, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 4999: Top1: 0.7294; Top5: 0.9074
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7297514033680834, 'ACC_ID': 0.5296712109061749, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 5999: Top1: 0.7348; Top5: 0.9085
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7347753743760399, 'ACC_ID': 0.5241264559068219, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 6999: Top1: 0.7380; Top5: 0.9093
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7380952380952381, 'ACC_ID': 0.5209409064830751, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 7999: Top1: 0.7361; Top5: 0.9066
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7361214836942992, 'ACC_ID': 0.5267612646253423, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 8999: Top1: 0.7396; Top5: 0.9080
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.739689578713969, 'ACC_ID': 0.5303769401330377, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 9999: Top1: 0.7377; Top5: 0.9091
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7377377377377378, 'ACC_ID': 0.5303303303303303, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 10999: Top1: 0.7374; Top5: 0.9107
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7374454148471615, 'ACC_ID': 0.5258369723435226, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 11999: Top1: 0.7381; Top5: 0.9129
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.738150867823765, 'ACC_ID': 0.5260347129506008, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 12999: Top1: 0.7412; Top5: 0.9140
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7411003236245954, 'ACC_ID': 0.5267375558637695, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 13999: Top1: 0.7435; Top5: 0.9150
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7433956875624732, 'ACC_ID': 0.5252034842210481, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 14999: Top1: 0.7437; Top5: 0.9164
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7437366737739872, 'ACC_ID': 0.521588486140725, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 15999: Top1: 0.7433; Top5: 0.9160
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7433362532849456, 'ACC_ID': 0.5203353772994619, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 16999: Top1: 0.7432; Top5: 0.9153
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7432066815668745, 'ACC_ID': 0.5182919656510999, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 17999: Top1: 0.7434; Top5: 0.9141
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7434298440979955, 'ACC_ID': 0.5184855233853006, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 18999: Top1: 0.7450; Top5: 0.9146
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7449550977284733, 'ACC_ID': 0.5166402535657686, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Step 19999: Top1: 0.7439; Top5: 0.9143
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7439, 'ACC_ID': 0.5148, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+
+
+ImagenetROOD SVHN ft_pl_txt maxlogit
+Final metrics: Top-1 accuracy: 74.3900; Top-5 accuracy: 91.4300
+{'Method': 'ft_pl_txt', 'OOD Detector': 'maxlogit_plthresh07', 'AUC': 0.8618562249999999, 'FPR95': 0.9013, 'ACC_ALL': 0.7439, 'ACC_ID': 0.5148, 'ACC_OOD': 0.9826, 'ACC_HM': 0.6756277280619741}
+
+
+
+
+

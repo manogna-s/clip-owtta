@@ -18,9 +18,8 @@ from clip.simple_tokenizer import SimpleTokenizer as _Tokenizer
 
 from models.maple import CustomCLIP
 
-from utils.data_utils import prepare_ood_test_data
+from utils.data_utils import prepare_ood_test_data, AugMixAugmenter
 from utils.clip_tta_utils import get_classifiers
-# from methods import zs_baselines, ft_pl_baseline, ft_pl_neg_proto_bank_v0, ft_pl_neg_proto_bank_v1
 
 
 def load_maple_to_cpu():
@@ -130,6 +129,7 @@ parser.add_argument('--strong_OOD', default='MNIST')
 parser.add_argument('--strong_ratio', default=1, type=float)
 parser.add_argument('--dataroot', default="/home/manogna/TTA/PromptAlign/data/ood", help='path to dataset')
 parser.add_argument('--batch_size', default=1, type=int)
+parser.add_argument('--n_views', default=64, type=int)
 parser.add_argument('--workers', default=4, type=int)
 parser.add_argument('--out_dir', default='./logs', help='folder to output log')
 parser.add_argument('--level', default=5, type=int)
@@ -145,39 +145,49 @@ parser.add_argument('--classifier_type', default='txt', type=str)
 
 
 
-
-# tta_methods = {'zsclip': zs_baselines.tta_id_ood, 'ft_pl_baseline': ft_pl_baseline.tta_id_ood, 
-#     'ft_pl_neg_proto_bank_v0': ft_pl_neg_proto_bank_v0.tta_id_ood, 'ft_pl_neg_proto_bank_v1': ft_pl_neg_proto_bank_v1.tta_id_ood }
-    
 from tta_ood import tta_methods
+
+
 # ----------- Args and Dataloader ------------
-args = parser.parse_args()
 
-print(args)
-print('\n')
+if __name__ == "__main__":
+    args = parser.parse_args()
 
-torch.manual_seed(args.seed)
-random.seed(args.seed)
-np.random.seed(args.seed)
-torch.cuda.manual_seed(args.seed)
-torch.cuda.manual_seed_all(args.seed)
+    print(args)
+    print('\n')
+
+    torch.manual_seed(args.seed)
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.cuda.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed)
+    torch.backends.cudnn.benchmark = True
 
 
-normalize = transforms.Normalize(mean=[0.48145466, 0.4578275, 0.40821073],
-                                    std=[0.26862954, 0.26130258, 0.27577711])
+    normalize = transforms.Normalize(mean=[0.48145466, 0.4578275, 0.40821073],
+                                        std=[0.26862954, 0.26130258, 0.27577711])
 
-preprocess = transforms.Compose([
-    transforms.Resize(224, interpolation=BICUBIC),
-    transforms.CenterCrop(224),
-    transforms.ToTensor(),
-    normalize,])
+    preprocess = transforms.Compose([
+        transforms.Resize(224, interpolation=BICUBIC),
+        transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        normalize,])
+    
+    if args.tta_method in ['tpt', 'promptalign']:
+        base_transform = transforms.Compose([
+            transforms.Resize(224, interpolation=BICUBIC),
+            transforms.CenterCrop(224)])
+        preprocess = transforms.Compose([
+                    transforms.ToTensor(),
+                    normalize])
+        preprocess = AugMixAugmenter(base_transform, preprocess, n_views=args.n_views-1, 
+                                                augmix=False)
 
-data_dict, test_set, test_loader = prepare_ood_test_data(args, preprocess)
+    data_dict, test_set, test_loader = prepare_ood_test_data(args, preprocess)
 
-model = get_model(args, data_dict['ID_classes'])
+    model = get_model(args, data_dict['ID_classes'])
 
-ID_classifiers = get_classifiers_maple(model, data_dict['ID_classes'], data_dict['templates'], data_dict['ID_class_descriptions'])
+    ID_classifiers = get_classifiers_maple(model, data_dict['ID_classes'], data_dict['templates'], data_dict['ID_class_descriptions'])
 
-result_metrics = tta_methods[args.tta_method](args, model, test_loader, ID_classifiers)
-
-print('\n\n\n')
+    result_metrics = tta_methods[args.tta_method](args, model, test_loader, ID_classifiers)
+    print('\n\n\n')

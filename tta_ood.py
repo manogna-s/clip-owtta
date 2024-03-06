@@ -10,9 +10,11 @@ except ImportError:
 
 import numpy as np
 from clip import clip
-from utils.data_utils import prepare_ood_test_data
+from utils.data_utils import prepare_ood_test_data, AugMixAugmenter
 from utils.clip_tta_utils import get_classifiers
-from methods import zs_baselines, ft_pl_baseline, ft_pl_neg_proto_bank_v0, ft_pl_neg_proto_bank_v1, ft_pl_neg_proto_bank_v2, ft_pl_neg_proto_bank_v3
+from methods import zs_baselines, tpt, promptalign, \
+    ft_pl_baseline, ft_pl_neg_proto_bank_v0, ft_pl_neg_proto_bank_v1, ft_pl_neg_proto_bank_v2, ft_pl_neg_proto_bank_v3, ft_pl_neg_proto_bank_v3_debug, \
+        ft_pl_neg_proto_bank_v4
 
 
 def load_clip_to_cpu():
@@ -47,6 +49,17 @@ def get_model_and_transforms(args):
             transforms.CenterCrop(224),
             transforms.ToTensor(),
             normalize,])
+        
+        if args.tta_method in ['tpt', 'promptalign']:
+            base_transform = transforms.Compose([
+                transforms.Resize(224, interpolation=BICUBIC),
+                transforms.CenterCrop(224)])
+            preprocess = transforms.Compose([
+                        transforms.ToTensor(),
+                        normalize])
+            preprocess = AugMixAugmenter(base_transform, preprocess, n_views=args.n_views-1, 
+                                                    augmix=False)
+        
     return model, preprocess
 
 
@@ -57,6 +70,7 @@ parser.add_argument('--strong_OOD', default='MNIST')
 parser.add_argument('--strong_ratio', default=1, type=float)
 parser.add_argument('--dataroot', default="/home/manogna/TTA/PromptAlign/data/ood", help='path to dataset')
 parser.add_argument('--batch_size', default=1, type=int)
+parser.add_argument('--n_views', default=64, type=int)
 parser.add_argument('--workers', default=4, type=int)
 parser.add_argument('--out_dir', default='./logs', help='folder to output log')
 parser.add_argument('--level', default=5, type=int)
@@ -77,27 +91,34 @@ tta_methods = {'zsclip': zs_baselines.tta_id_ood, 'ft_pl_baseline': ft_pl_baseli
     'ft_pl_neg_proto_bank_v0': ft_pl_neg_proto_bank_v0.tta_id_ood,
     'ft_pl_neg_proto_bank_v1': ft_pl_neg_proto_bank_v1.tta_id_ood,
     'ft_pl_neg_proto_bank_v2': ft_pl_neg_proto_bank_v2.tta_id_ood,
-    'ft_pl_neg_proto_bank_v3': ft_pl_neg_proto_bank_v3.tta_id_ood  }
+    'ft_pl_neg_proto_bank_v3': ft_pl_neg_proto_bank_v3.tta_id_ood,
+    'ft_pl_neg_proto_bank_v4': ft_pl_neg_proto_bank_v4.tta_id_ood,
+    'ft_pl_neg_proto_bank_v3_debug': ft_pl_neg_proto_bank_v3_debug.tta_id_ood,
+    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood}
     
 # ----------- Args and Dataloader ------------
-args = parser.parse_args()
 
-print(args)
-print('\n')
-
-torch.manual_seed(args.seed)
-random.seed(args.seed)
-np.random.seed(args.seed)
-torch.cuda.manual_seed(args.seed)
-torch.cuda.manual_seed_all(args.seed)
+if __name__ == "__main__":
+    args = parser.parse_args()
 
 
-model, preprocess = get_model_and_transforms(args)
+    print(args)
+    print('\n')
 
-data_dict, test_set, test_loader = prepare_ood_test_data(args, preprocess)
+    torch.manual_seed(args.seed)
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.cuda.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed)
 
-ID_classifiers = get_classifiers(model, data_dict['ID_classes'], data_dict['templates'], data_dict['ID_class_descriptions'])
 
-result_metrics = tta_methods[args.tta_method](args, model, test_loader, ID_classifiers)
+    model, preprocess = get_model_and_transforms(args)
 
-print('\n\n\n')
+    data_dict, test_set, test_loader = prepare_ood_test_data(args, preprocess)
+
+    ID_classifiers = get_classifiers(model, data_dict['ID_classes'], data_dict['templates'], data_dict['ID_class_descriptions'])
+
+
+    result_metrics = tta_methods[args.tta_method](args, model, test_loader, ID_classifiers)
+
+    print('\n\n\n')
