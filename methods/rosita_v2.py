@@ -111,7 +111,6 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
         image_features = image_features_raw/image_features_raw.norm(dim=-1, keepdim=True)
 
         logits = image_features @ classifier.T
-        # print(logits.shape)
         maxlogit_tta, pred_tta = logits.max(1)
         msp, _ = (logits * 100).softmax(1).max(1)
         energy = torch.logsumexp(logits * 100, 1)/100
@@ -128,9 +127,7 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
             criterias = []
             for th in threshold_range:
                 inter_var, _ = compute_os_variance_stats(np.array(scores_q), th)
-                # print(inter_var)
                 criterias.append(inter_var)
-            # criterias = [compute_os_variance(np.array(scores_q), th) for th in threshold_range]
             best_thresh = threshold_range[np.argmin(criterias)]
             _, stats = compute_os_variance_stats(np.array(scores_q), best_thresh)
 
@@ -139,10 +136,10 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
 
         ID_sel = ID_pred * (msp > args.pl_thresh) 
 
-        if ID_pred[0].item() and ood_score[ood_detect].item()>stats['mu1']:
+        if ID_pred[0].item(): # and ood_score[ood_detect].item()>stats['mu1']:
             proto_bank['ID'].append(image_features_raw.detach())
             proto_bank['ID'] = proto_bank['ID'][-queue_length:]
-        if OOD_pred[0].item() and ood_score[ood_detect].item()<stats['mu0']:
+        if OOD_pred[0].item(): # and ood_score[ood_detect].item()<stats['mu0']:
             proto_bank['OOD'].append(image_features_raw.detach())
             proto_bank['OOD'] = proto_bank['OOD'][-queue_length:]
 
@@ -152,8 +149,6 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
             loss += nn.CrossEntropyLoss()(logits[ID_sel], pred_tta[ID_sel])
 
         if i>queue_length:
-            # p_ood = normal_dist(ood_score[ood_detect].item(), stats['mu0'], np.sqrt(stats['var0']))
-            # p_id = normal_dist(ood_score[ood_detect].item(), stats['mu1'], np.sqrt(stats['var1']))
             if ood_score[ood_detect].item()>stats['mu1'] or ood_score[ood_detect].item()<stats['mu0']:
                 if ID_pred[0].item():
                     pos_features = torch.vstack(proto_bank['ID'])

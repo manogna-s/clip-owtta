@@ -8,6 +8,7 @@ import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 import numpy as np
 from torchvision.datasets import ImageNet
+import utils.augmix_ops as augmentations
 
 
 cifar_templates = [
@@ -336,7 +337,10 @@ class AugMixAugmenter(object):
         self.base_transform = base_transform
         self.preprocess = preprocess
         self.n_views = n_views
-        self.aug_list = []
+        if augmix:
+            self.aug_list = augmentations.augmentations
+        else:
+            self.aug_list = []
         self.severity = severity
         
     def __call__(self, x):

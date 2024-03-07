@@ -3,58 +3,80 @@ import torch
 import torch.nn as nn
 import os
 import json
+from copy import deepcopy
 import pandas as pd
 import matplotlib.pyplot as plt
 from utils.clip_tta_utils import compute_os_variance, accuracy, cal_auc_fpr, HM, get_ln_params
+from torch.nn import functional as F
+
+TPT_THRESHOLD = 0.1
+ALIGN_THRESHOLD = 0.1
+DISTR_LOSS_W = 100.0
+visual_vars = torch.load('weights/features/ImgNetpre_vis_means.pt')
+visual_means = torch.load('weights/features/ImgNetpre_vis_vars.pt')
+ALIGN_LAYER_FROM = 0
+ALIGN_LAYER_TO = 3
+
+def select_confident_samples(logits, topTPT, topAlign):
+    batch_entropy = -(logits.softmax(1) * logits.log_softmax(1)).sum(1)
+    idxTPT = torch.argsort(batch_entropy, descending=False)[:int(batch_entropy.size()[0] * topTPT)]
+    idxAlign = torch.argsort(batch_entropy, descending=False)[:int(batch_entropy.size()[0] * topAlign)]
+    return logits[idxTPT], idxAlign
 
 
-def normal_dist(x, mean, sd):
-    prob_density = (np.pi*sd) * np.exp(-0.5*((x-mean)/sd)**2)
-    return prob_density
+def avg_entropy(outputs):
+    logits = outputs - outputs.logsumexp(dim=-1, keepdim=True) # logits = outputs.log_softmax(dim=1) [N, 1000]
+    avg_logits = logits.logsumexp(dim=0) - np.log(logits.shape[0]) # avg_logits = logits.mean(0) [1, 1000]
+    min_real = torch.finfo(avg_logits.dtype).min
+    avg_logits = torch.clamp(avg_logits, min=min_real)
+    return -(avg_logits * torch.exp(avg_logits)).sum(dim=-1)
 
 
-def compute_os_variance_stats(os, th):
-    """
-    Calculate the area of a rectangle.
-
-    Parameters:
-        os : OOD score queue.
-        th : Given threshold to separate weak and strong OOD samples.
-
-    Returns:
-        float: Weighted variance at the given threshold th.
-    """
+def distr_align_loss(out_feat, targ_feat, layers_from=0, layers_to=12, moments=5):
+    '''
+    A feature distibution alignment L1 loss between mean and variance of the features
+    '''
+    distr_loss = 0
+    out_means, out_vars = out_feat
+    targ_means, targ_vars = targ_feat
+    transf_layers = layers_to
+    for l in range(layers_from, transf_layers-1):
+        out_mean, out_var = out_means[l], out_vars[l]
+        targ_mean, targ_var = targ_means[l], targ_vars[l]
+        distr_loss += 0.5 * F.l1_loss(out_mean, targ_mean) + 0.5 * F.l1_loss(out_var, targ_var)
+    return distr_loss
     
-    thresholded_os = np.zeros(os.shape)
-    thresholded_os[os >= th] = 1
+    
+def promptalign_test_time_tuning(model, inputs, optimizer, scaler):
 
-    # compute weights
-    nb_pixels = os.size
-    nb_pixels1 = np.count_nonzero(thresholded_os)
-    weight1 = nb_pixels1 / nb_pixels
-    weight0 = 1 - weight1
+    selected_idx = None
+    DISTR_LOSS_W = 100.0
+    for j in range(1):
+        with torch.cuda.amp.autocast():
+            output = model(inputs) 
 
-    # if one the classes is empty, eg all pixels are below or above the threshold, that threshold will not be considered
-    # in the search for the best threshold
-    if weight1 == 0 or weight0 == 0:
-        return np.inf, {'mu0': 0, 'mu1': 1, 'var0': 0, 'var1': 0}
+            output, selected_idx = select_confident_samples(output, TPT_THRESHOLD, ALIGN_THRESHOLD)
 
-    # find all pixels belonging to each class
-    val_pixels1 = os[thresholded_os == 1]
-    val_pixels0 = os[thresholded_os == 0]
+            loss = avg_entropy(output)
 
-    # compute mean of these classes
-    mu0 = np.mean(val_pixels0) if len(val_pixels0) > 0 else 0
-    mu1 = np.mean(val_pixels1) if len(val_pixels1) > 0 else 0
+            # Only selected indexes
+            target_feat_distr = (visual_means, visual_vars)
+            out_visual_mean = torch.cat([torch.mean(res.visual_feat[:, selected_idx, :], dim=1, keepdims=True).permute(1,0,2) for res in model.image_encoder.transformer.resblocks])
+            out_visual_var = torch.cat([torch.mean(((res.visual_feat[:, selected_idx, :] - out_visual_mean[i, :, :].unsqueeze(0).permute(1,0,2))**2), dim=1, keepdims=True).permute(1,0,2) for i, res in enumerate(model.image_encoder.transformer.resblocks)])
+            out_feat_distr = (out_visual_mean, out_visual_var)
+        
+            DISTR_LOSS_W = DISTR_LOSS_W / (ALIGN_LAYER_TO - ALIGN_LAYER_FROM)
+            loss += DISTR_LOSS_W * distr_align_loss(out_feat_distr, target_feat_distr, 
+                                        layers_from=ALIGN_LAYER_FROM, layers_to=ALIGN_LAYER_TO)
+        
+        optimizer.zero_grad()
+        # compute gradient and do SGD step
+        scaler.scale(loss).backward()
+        # Unscales the gradients of optimizer's assigned params in-place
+        scaler.step(optimizer)
+        scaler.update()
 
-    # compute variance of these classes
-    var0 = np.var(val_pixels0) if len(val_pixels0) > 0 else 0
-    var1 = np.var(val_pixels1) if len(val_pixels1) > 0 else 0
-
-    stats = {'mu0': mu0, 'mu1': mu1, 'var0': var0, 'var1': var1}
-    return weight0 * var0 + weight1 * var1, stats
-
-
+    return model
 
 def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
 
@@ -62,8 +84,8 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
     tta_method = f'{args.tta_method}_{args.classifier_type}' 
     ood_thresh = 'otsu'
     ood_detect = args.ood_detector
-    name = f'{ood_detect}_plthresh0{int(args.pl_thresh*10)}'
-
+    name = f'{ood_detect}'
+    
     log_dir_path = os.path.join(args.out_dir, args.model, args.dataset, args.strong_OOD, tta_method)
     os.makedirs(log_dir_path, exist_ok=True)
     os.makedirs(f'{log_dir_path}/result_metrics', exist_ok=True)
@@ -71,6 +93,7 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
     os.makedirs(f'{log_dir_path}/ood_scores', exist_ok=True)
     os.makedirs(f'{log_dir_path}/out_logs', exist_ok=True)
     log_file = open(f'{log_dir_path}/out_logs/{name}.txt', 'w')
+    
 
 
     n_samples= {}
@@ -81,6 +104,8 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
     n_samples['ID_total'] = 0
     n_samples['OOD_total'] = 0
 
+
+
     metrics_exp = {'Method':tta_method , 'OOD Detector':name, 'AUC':0, 'FPR95':0, 'ACC_ALL':0, 'ACC_ID':0, 'ACC_OOD':0, 'ACC_HM':0}
     gt_indicators = {'ID': [], 'OOD': [], 'gt_idx': []}
 
@@ -89,101 +114,62 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
     scores_q = []
     queue_length = args.N_m
 
-    ln_params = get_ln_params(model)
-    optimizer = torch.optim.SGD(ln_params, lr=0.001)
+    model.set_prompt_inits() 
+    for nm, param in model.named_parameters():
+        if "prompt_learner" not in nm:
+            param.requires_grad_(False)
+    
+    trainable_param = model.prompt_learner.parameters()
+    optimizer = torch.optim.AdamW(trainable_param, lr=4e-2)
+    optim_state = deepcopy(optimizer.state_dict())
+    scaler = torch.cuda.amp.GradScaler(init_scale=1000)
 
-    neg_proto = torch.zeros((1, 512)).cuda()
 
-    proto_bank = {'ID': [], 'OOD': []}
-
-    for i, (image, gt) in enumerate(ID_OOD_loader):
-        if isinstance(image,list):
-            image = image[0].cuda()
+    for i, (images, gt) in enumerate(ID_OOD_loader):
+        images = images[:-1]
+        if isinstance(images,list):
+            for k in range(len(images)):
+                images[k] = images[k].cuda()
+            image = images[0]
         else:
             image = image.cuda()
+        images = torch.cat(images, dim=0)
         image, gt = image.cuda(), gt.cuda()
         gt_indicators['ID'].append((gt<1000).item())
         gt_indicators['OOD'].append((gt>=1000).item())
         gt_indicators['gt_idx'].append(gt.item())
-
+        
+        #TPT
+        with torch.no_grad():
+            model.reset()
+        
         # TTA
-        image_features_raw = model.encode_image(image)
-        image_features = image_features_raw/image_features_raw.norm(dim=-1, keepdim=True)
+        image_features = model.encode_image(image)
+        image_features = image_features/image_features.norm(dim=-1, keepdim=True)
 
         logits = image_features @ classifier.T
-        # print(logits.shape)
         maxlogit_tta, pred_tta = logits.max(1)
         msp, _ = (logits * 100).softmax(1).max(1)
         energy = torch.logsumexp(logits * 100, 1)/100
-
-
+        
         best_thresh = ood_thresh
         ood_score= {'msp': msp, 'maxlogit': maxlogit_tta, 'energy': energy}
         if ood_thresh == 'otsu':
-            #auto threshold
             threshold_range = np.arange(0,1,0.01)
             ood_scores.extend(ood_score[ood_detect].tolist())
             scores_q.extend(ood_score[ood_detect].tolist())
             scores_q = scores_q[-queue_length:]
-            criterias = []
-            for th in threshold_range:
-                inter_var, _ = compute_os_variance_stats(np.array(scores_q), th)
-                # print(inter_var)
-                criterias.append(inter_var)
-            # criterias = [compute_os_variance(np.array(scores_q), th) for th in threshold_range]
+            criterias = [compute_os_variance(np.array(scores_q), th) for th in threshold_range]
             best_thresh = threshold_range[np.argmin(criterias)]
-            _, stats = compute_os_variance_stats(np.array(scores_q), best_thresh)
 
         ID_curr, OOD_curr = gt<1000, gt>=1000
         ID_pred, OOD_pred = ood_score[ood_detect] >= best_thresh, ood_score[ood_detect] < best_thresh
-
         ID_sel = ID_pred * (msp > args.pl_thresh) 
 
-        if ID_pred[0].item() and ood_score[ood_detect].item()>stats['mu1']:
-            proto_bank['ID'].append(image_features_raw.detach())
-            proto_bank['ID'] = proto_bank['ID'][-queue_length:]
-        if OOD_pred[0].item() and ood_score[ood_detect].item()<stats['mu0']:
-            proto_bank['OOD'].append(image_features_raw.detach())
-            proto_bank['OOD'] = proto_bank['OOD'][-queue_length:]
+        if ID_pred[0].item():    
+            optimizer.load_state_dict(optim_state)
+            model = promptalign_test_time_tuning(model, images, optimizer, scaler)
 
-        loss = 0
-        if ID_sel.item():
-
-            loss += nn.CrossEntropyLoss()(logits[ID_sel], pred_tta[ID_sel])
-
-        if i>queue_length:
-            # p_ood = normal_dist(ood_score[ood_detect].item(), stats['mu0'], np.sqrt(stats['var0']))
-            # p_id = normal_dist(ood_score[ood_detect].item(), stats['mu1'], np.sqrt(stats['var1']))
-            if ood_score[ood_detect].item()>stats['mu1'] or ood_score[ood_detect].item()<stats['mu0']:
-                if ID_pred[0].item():
-                    pos_features = torch.vstack(proto_bank['ID'])
-                    neg_features = torch.vstack(proto_bank['OOD'])
-
-                elif OOD_pred[0].item(): 
-                    pos_features = torch.vstack(proto_bank['OOD'])
-                    neg_features = torch.vstack(proto_bank['ID'])
-
-                pos_features = pos_features/pos_features.norm(dim=-1, keepdim=True)
-                neg_features = neg_features/neg_features.norm(dim=-1, keepdim=True)
-
-                pos_sim = image_features @ pos_features.T
-                k=3
-                topk_pos_sim, _ = torch.topk(pos_sim, k=k, dim=-1, largest=True) 
-
-                neg_sim = image_features @ neg_features.T
-                topk_neg_sim, _ = torch.topk(neg_sim, k=10, dim=-1, largest=True) 
-
-                pos_sim_k = topk_pos_sim.T
-                neg_sim_k = topk_neg_sim.expand(k, -1)
-                simclr_logits = torch.cat([pos_sim_k, neg_sim_k+0.2], dim=1)
-
-                l_simclr = nn.CrossEntropyLoss()(simclr_logits, torch.zeros((k,), dtype=torch.long).cuda())
-                loss += l_simclr * 0.5
-
-        if loss:
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
 
         # metrics
         n_samples['ID_det'] += torch.sum(ID_pred[ID_curr]).item()
@@ -211,6 +197,7 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
             print(status_log)
             log_file.write(status_log)
 
+
         # measure accuracy
         acc1, acc5 = accuracy(logits_txt[gt<1000], gt[gt<1000], topk=(1, 5))
         top1 += acc1
@@ -219,6 +206,7 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
 
     top1 = (top1 / n) * 100
     top5 = (top5 / n) * 100
+
 
     metrics_exp['ACC_ALL'] = n_samples['ALL']/n_samples['ID_total']
     metrics_exp['ACC_ID'] = n_samples['ID']/n_samples['ID_total']

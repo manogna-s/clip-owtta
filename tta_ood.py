@@ -12,10 +12,19 @@ import numpy as np
 from clip import clip
 from utils.data_utils import prepare_ood_test_data, AugMixAugmenter
 from utils.clip_tta_utils import get_classifiers
-from methods import zs_baselines, tpt, promptalign, \
+from methods import zs_baselines, tpt, promptalign, promptalign_aug, \
     ft_pl_baseline, ft_pl_neg_proto_bank_v0, ft_pl_neg_proto_bank_v1, ft_pl_neg_proto_bank_v2, ft_pl_neg_proto_bank_v3, ft_pl_neg_proto_bank_v3_debug, \
-        ft_pl_neg_proto_bank_v4
+        ft_pl_neg_proto_bank_v4, rosita_v0, rosita_v1, rosita_v2
 
+tta_methods = {'zsclip': zs_baselines.tta_id_ood, 'ft_pl_baseline': ft_pl_baseline.tta_id_ood, \
+    'ft_pl_neg_proto_bank_v0': ft_pl_neg_proto_bank_v0.tta_id_ood,
+    'ft_pl_neg_proto_bank_v1': ft_pl_neg_proto_bank_v1.tta_id_ood,
+    'ft_pl_neg_proto_bank_v2': ft_pl_neg_proto_bank_v2.tta_id_ood,
+    'ft_pl_neg_proto_bank_v3': ft_pl_neg_proto_bank_v3.tta_id_ood,
+    'ft_pl_neg_proto_bank_v4': ft_pl_neg_proto_bank_v4.tta_id_ood,
+    'ft_pl_neg_proto_bank_v3_debug': ft_pl_neg_proto_bank_v3_debug.tta_id_ood,
+    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 'promptalign_aug': promptalign_aug.tta_id_ood, \
+    'rosita_v0': rosita_v0.tta_id_ood, 'rosita_v1': rosita_v1.tta_id_ood, 'rosita_v2': rosita_v2.tta_id_ood}
 
 def load_clip_to_cpu():
     url = clip._MODELS['ViT-B/16']
@@ -82,19 +91,11 @@ parser.add_argument('--seed', default=0, type=int)
 parser.add_argument('--ood_detector', default='maxlogit', type=str)
 parser.add_argument('--tta_method', default='zsclip', type=str)
 parser.add_argument('--pl_thresh', default=0.7, type=float)
+parser.add_argument('--alpha', default=0.5, type=float)
+parser.add_argument('--knn', default=3, type=int)
+
 parser.add_argument('--classifier_type', default='txt', type=str)
 
-
-
-
-tta_methods = {'zsclip': zs_baselines.tta_id_ood, 'ft_pl_baseline': ft_pl_baseline.tta_id_ood, \
-    'ft_pl_neg_proto_bank_v0': ft_pl_neg_proto_bank_v0.tta_id_ood,
-    'ft_pl_neg_proto_bank_v1': ft_pl_neg_proto_bank_v1.tta_id_ood,
-    'ft_pl_neg_proto_bank_v2': ft_pl_neg_proto_bank_v2.tta_id_ood,
-    'ft_pl_neg_proto_bank_v3': ft_pl_neg_proto_bank_v3.tta_id_ood,
-    'ft_pl_neg_proto_bank_v4': ft_pl_neg_proto_bank_v4.tta_id_ood,
-    'ft_pl_neg_proto_bank_v3_debug': ft_pl_neg_proto_bank_v3_debug.tta_id_ood,
-    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood}
     
 # ----------- Args and Dataloader ------------
 

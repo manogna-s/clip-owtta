@@ -181,7 +181,7 @@ if __name__ == "__main__":
                     transforms.ToTensor(),
                     normalize])
         preprocess = AugMixAugmenter(base_transform, preprocess, n_views=args.n_views-1, 
-                                                augmix=False)
+                                                augmix=True)
 
     data_dict, test_set, test_loader = prepare_ood_test_data(args, preprocess)
 

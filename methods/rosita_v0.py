@@ -111,7 +111,6 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
         image_features = image_features_raw/image_features_raw.norm(dim=-1, keepdim=True)
 
         logits = image_features @ classifier.T
-        # print(logits.shape)
         maxlogit_tta, pred_tta = logits.max(1)
         msp, _ = (logits * 100).softmax(1).max(1)
         energy = torch.logsumexp(logits * 100, 1)/100
