@@ -1,0 +1,18 @@
+rosita_v0 maxlogit txt
+Namespace(N_m=512, alpha=0.5, batch_size=1, classifier_type='txt', corruption='snow', dataroot='/home/manogna/TTA/PromptAlign/data/ood', dataset='VisdaOOD', knn=3, level=5, model='maple', model_type='ViT-B/16', n_views=64, ood_detector='maxlogit', out_dir='./logs', pl_thresh=0.5, seed=0, strong_OOD='MNIST', strong_ratio=1, tta_method='rosita_v0', workers=4)
+
+
+10000 10000 20000
+MaPLe design: Multi-modal Prompt Learning
+Initial context: "a photo of a"
+Number of MaPLe context words (tokens): 2
+Traceback (most recent call last):
+  File "tta_ood_maple.py", line 194, in <module>
+    result_metrics = tta_methods[args.tta_method](args, model, test_loader, ID_classifiers)
+  File "/home/manogna/TTA/clip-owtta/methods/rosita_v0.py", line 184, in tta_id_ood
+    loss.backward()
+  File "/home/manogna/anaconda3/envs/promptalign/lib/python3.8/site-packages/torch/_tensor.py", line 255, in backward
+    torch.autograd.backward(self, gradient, retain_graph, create_graph, inputs=inputs)
+  File "/home/manogna/anaconda3/envs/promptalign/lib/python3.8/site-packages/torch/autograd/__init__.py", line 147, in backward
+    Variable._execution_engine.run_backward(
+KeyboardInterrupt

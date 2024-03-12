@@ -9,6 +9,7 @@ import torchvision.transforms as transforms
 import numpy as np
 from torchvision.datasets import ImageNet
 import utils.augmix_ops as augmentations
+from utils.robustbench_loader import CustomImageFolder
 
 
 cifar_templates = [
@@ -204,11 +205,9 @@ def prepare_ood_test_data(args, te_transforms):
                 raise
     
     elif args.dataset == 'ImagenetROOD':
-        # self.classnames = ['airplanes', 'cars', 'birds', 'cats', 'deer', 'dogs', 'frogs', 'horses', 'ships', 'trucks']
-        # self.lab2cname = self.classnames
+
         ID_dataset = 'imagenetr'
         imagenet_descriptions = json.load(open(f'/home/manogna/TTA/PromptAlign/data/ood/prompt_templates/imagenetr_prompts_full.json'))
-        # data_dict['ID_classes'] = list(data_dict['ID_class_descriptions'].keys())
 
         testset = ImageNetR(root= args.dataroot)
         print(testset.classnames)
@@ -218,7 +217,6 @@ def prepare_ood_test_data(args, te_transforms):
         data_dict['ID_class_descriptions'] = {}
         for classname in data_dict['ID_classes']:
             data_dict['ID_class_descriptions'][classname] = imagenet_descriptions[classname]
-        # json.dump(data_dict['ID_class_descriptions'], open(f'/home/manogna/TTA/PromptAlign/data/ood/prompt_templates/imagenetr_prompts_full.json', 'w'))
 
         tesize = 10000
         testset = ImageNetR(root= args.dataroot, transform=te_transforms, train=True, tesize=tesize)
@@ -297,6 +295,69 @@ def prepare_ood_test_data(args, te_transforms):
                 teset = torch.utils.data.ConcatDataset([testset,noise])
             
             print(len(testset), len(noise), len(teset))
+
+    elif args.dataset == 'ImagenetCOOD':
+        ID_dataset = 'imagenetc'
+        tesize = 10000
+
+        corruption_dir_path = os.path.join(args.dataroot, 'ImageNet-C/all', args.corruption,  str(args.level))
+        testset = CustomImageFolder(corruption_dir_path, te_transforms, tesize=tesize)
+
+        data_dict['ID_class_descriptions'] = json.load(open(f'/home/manogna/TTA/PromptAlign/data/ood/prompt_templates/imagenet_prompts_full.json'))
+        data_dict['ID_classes'] = list(data_dict['ID_class_descriptions'].keys())
+        data_dict['N_classes'] = len(data_dict['ID_classes'])
+        data_dict['templates'] = imagenet_templates
+
+        if True: 
+
+            if args.strong_OOD == 'MNIST':
+                te_rize = transforms.Compose([transforms.Resize(size=(32, 32)), transforms.Grayscale(3), te_transforms ])
+                noise = MNIST_openset(root=args.dataroot,
+                            train=True, download=True, transform=te_rize, tesize=tesize, ratio=args.strong_ratio)
+
+                teset = torch.utils.data.ConcatDataset([testset,noise])
+                print(len(testset), len(noise), len(teset))
+            
+            elif args.strong_OOD == 'noise':
+                noise = noise_dataset(te_transforms, args.strong_ratio)
+
+                teset = torch.utils.data.ConcatDataset([testset,noise])
+
+            elif args.strong_OOD =='cifar10':
+                teset_raw_10 = np.load(args.dataroot + '/CIFAR-10-C/snow.npy')
+                teset_raw_10 = teset_raw_10[(args.level-1)*tesize: args.level*tesize]
+                teset_10 = CIFAR10_openset(root=args.dataroot,
+                                train=True, download=True, transform=te_transforms, tesize=tesize, ratio=args.strong_ratio)
+                teset_10.data = teset_raw_10[:int(tesize*args.strong_ratio)]
+                teset = torch.utils.data.ConcatDataset([testset,teset_10])
+
+            elif args.strong_OOD =='cifar100':
+                teset_raw_100 = np.load(args.dataroot + '/CIFAR-100-C/snow.npy')
+                teset_raw_100 = teset_raw_100[(args.level-1)*tesize: args.level*tesize]
+                teset_100 = CIFAR100_openset(root=args.dataroot,
+                                train=True, download=True, transform=te_transforms, tesize=tesize, ratio=args.strong_ratio)
+                teset_100.data = teset_raw_100[:int(tesize*args.strong_ratio)]
+                teset = torch.utils.data.ConcatDataset([testset,teset_100])
+
+            elif args.strong_OOD =='SVHN': 
+                te_rize = transforms.Compose([te_transforms ])
+                noise = SVHN_openset(root=args.dataroot,
+                            split='train', download=True, transform=te_rize, tesize=tesize, ratio=args.strong_ratio)
+                teset = torch.utils.data.ConcatDataset([testset,noise])
+                print(len(testset), len(noise), len(teset))
+                
+            elif args.strong_OOD =='Tiny':
+
+                transform_test = transforms.Compose([transforms.Resize(32), te_transforms ])
+                testset_tiny = TinyImageNet_OOD_nonoverlap(args.dataroot +'/tiny-imagenet-200', transform=transform_test, train=True)
+                teset = torch.utils.data.ConcatDataset([testset,testset_tiny])
+                # print(len(teset_10),len(testset_tiny),len(teset))
+                
+            else:
+                raise
+
+
+
 
     ID_OOD_loader = torch.utils.data.DataLoader(teset, batch_size=args.batch_size, shuffle=True)
 

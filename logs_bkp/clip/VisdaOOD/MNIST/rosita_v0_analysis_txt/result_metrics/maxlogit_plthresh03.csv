@@ -1,0 +1,2 @@
+Method,OOD Detector,AUC,FPR95,ACC_ALL,ACC_ID,ACC_OOD,ACC_HM
+rosita_v0_analysis_txt,maxlogit_plthresh03,0.98163705,0.1472,0.8531,0.7844,0.9965,0.8778197540569375

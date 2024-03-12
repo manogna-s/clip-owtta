@@ -1,0 +1,44 @@
+
+Step 999: Top1: 0.7510; Top5: 0.8992
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7510288065843621, 'ACC_ID': 0.6049382716049383, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 1999: Top1: 0.7472; Top5: 0.9137
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7472417251755266, 'ACC_ID': 0.5917753259779338, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 2999: Top1: 0.7453; Top5: 0.9118
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7454909819639278, 'ACC_ID': 0.5751503006012024, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 3999: Top1: 0.7519; Top5: 0.9156
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.751996007984032, 'ACC_ID': 0.5828343313373253, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 4999: Top1: 0.7552; Top5: 0.9157
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7552894211576846, 'ACC_ID': 0.5904191616766467, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 5999: Top1: 0.7532; Top5: 0.9156
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7533200531208499, 'ACC_ID': 0.5899734395750332, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 6999: Top1: 0.7543; Top5: 0.9146
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7543410190720182, 'ACC_ID': 0.5903785937944777, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 7999: Top1: 0.7537; Top5: 0.9140
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7537387836490529, 'ACC_ID': 0.5932203389830508, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 8999: Top1: 0.7518; Top5: 0.9139
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7518361896283107, 'ACC_ID': 0.5915869129757401, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 9999: Top1: 0.7486; Top5: 0.9118
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7486470234515935, 'ACC_ID': 0.5902986570455001, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 10999: Top1: 0.7505; Top5: 0.9122
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7503625815808557, 'ACC_ID': 0.5933647570703409, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 11999: Top1: 0.7518; Top5: 0.9127
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7518659810913916, 'ACC_ID': 0.5931331895836789, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 12999: Top1: 0.7525; Top5: 0.9125
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7524980784012298, 'ACC_ID': 0.5918524212144505, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 13999: Top1: 0.7512; Top5: 0.9121
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7512820512820513, 'ACC_ID': 0.5908831908831909, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 14999: Top1: 0.7522; Top5: 0.9133
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7520902455209024, 'ACC_ID': 0.5920371599203716, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 15999: Top1: 0.7509; Top5: 0.9127
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7508421709295072, 'ACC_ID': 0.5917654398003743, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 16999: Top1: 0.7526; Top5: 0.9141
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7523205263776289, 'ACC_ID': 0.5927623076019269, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 17999: Top1: 0.7522; Top5: 0.9129
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7519946808510638, 'ACC_ID': 0.5921985815602837, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 18999: Top1: 0.7501; Top5: 0.9120
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7498422712933754, 'ACC_ID': 0.5917981072555205, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 19999: Top1: 0.7488; Top5: 0.9117
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.7487, 'ACC_ID': 0.5918, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Final metrics: Top-1 accuracy: 74.8800; Top-5 accuracy: 91.1700
+{'Method': 'tpt_txt', 'OOD Detector': 'maxlogit', 'AUC': 0.900764935, 'FPR95': 0.8122, 'ACC_ALL': 0.7487, 'ACC_ID': 0.5918, 'ACC_OOD': 0.9836, 'ACC_HM': 0.7389799162117556}

@@ -8,7 +8,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from utils.clip_tta_utils import compute_os_variance, accuracy, cal_auc_fpr, HM, get_ln_params
 from torch.nn import functional as F
-from methods.promptalign import select_confident_samples, avg_entropy
 
 TPT_THRESHOLD = 0.1
 ALIGN_THRESHOLD = 0.1
@@ -17,6 +16,20 @@ visual_vars = torch.load('weights/features/ImgNetpre_vis_means.pt')
 visual_means = torch.load('weights/features/ImgNetpre_vis_vars.pt')
 ALIGN_LAYER_FROM = 0
 ALIGN_LAYER_TO = 3
+
+def select_confident_samples(logits, topTPT, topAlign):
+    batch_entropy = -(logits.softmax(1) * logits.log_softmax(1)).sum(1)
+    idxTPT = torch.argsort(batch_entropy, descending=False)[:int(batch_entropy.size()[0] * topTPT)]
+    idxAlign = torch.argsort(batch_entropy, descending=False)[:int(batch_entropy.size()[0] * topAlign)]
+    return logits[idxTPT], idxAlign
+
+
+def avg_entropy(outputs):
+    logits = outputs - outputs.logsumexp(dim=-1, keepdim=True) # logits = outputs.log_softmax(dim=1) [N, 1000]
+    avg_logits = logits.logsumexp(dim=0) - np.log(logits.shape[0]) # avg_logits = logits.mean(0) [1, 1000]
+    min_real = torch.finfo(avg_logits.dtype).min
+    avg_logits = torch.clamp(avg_logits, min=min_real)
+    return -(avg_logits * torch.exp(avg_logits)).sum(dim=-1)
 
 
 def tpt_test_time_tuning(model, inputs, optimizer, scaler):

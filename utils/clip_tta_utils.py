@@ -168,6 +168,7 @@ def cal_auc_fpr(ind_conf, ood_conf):
     ind_indicator = np.concatenate((np.ones_like(ind_conf), np.zeros_like(ood_conf)))
     auroc = metrics.roc_auc_score(ind_indicator, conf)
     fpr,tpr,thresh = Roc(ind_indicator, conf, pos_label=1)
+    print(thresh)
     fpr = float(interpolate.interp1d(tpr, fpr)(0.95))
     return auroc, fpr
 

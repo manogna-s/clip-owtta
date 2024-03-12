@@ -1,0 +1,85 @@
+rosita_v0 maxlogit txt
+Traceback (most recent call last):
+  File "tta_ood_maple.py", line 150, in <module>
+    from tta_ood import tta_methods
+  File "/home/manogna/TTA/clip-owtta/tta_ood.py", line 26
+    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 'promptalign_aug': promptalign_aug.tta_id_ood, \ 
+                                                                                                                  ^
+SyntaxError: unexpected character after line continuation character
+Traceback (most recent call last):
+  File "tta_ood_maple.py", line 150, in <module>
+    from tta_ood import tta_methods
+  File "/home/manogna/TTA/clip-owtta/tta_ood.py", line 26
+    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 'promptalign_aug': promptalign_aug.tta_id_ood, \ 
+                                                                                                                  ^
+SyntaxError: unexpected character after line continuation character
+Traceback (most recent call last):
+  File "tta_ood_maple.py", line 150, in <module>
+    from tta_ood import tta_methods
+  File "/home/manogna/TTA/clip-owtta/tta_ood.py", line 26
+    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 'promptalign_aug': promptalign_aug.tta_id_ood, \ 
+                                                                                                                  ^
+SyntaxError: unexpected character after line continuation character
+Traceback (most recent call last):
+  File "tta_ood_maple.py", line 150, in <module>
+    from tta_ood import tta_methods
+  File "/home/manogna/TTA/clip-owtta/tta_ood.py", line 26
+    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 'promptalign_aug': promptalign_aug.tta_id_ood, \ 
+                                                                                                                  ^
+SyntaxError: unexpected character after line continuation character
+Traceback (most recent call last):
+  File "tta_ood_maple.py", line 150, in <module>
+    from tta_ood import tta_methods
+  File "/home/manogna/TTA/clip-owtta/tta_ood.py", line 26
+    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 'promptalign_aug': promptalign_aug.tta_id_ood, \ 
+                                                                                                                  ^
+SyntaxError: unexpected character after line continuation character
+Traceback (most recent call last):
+  File "tta_ood_maple.py", line 150, in <module>
+    from tta_ood import tta_methods
+  File "/home/manogna/TTA/clip-owtta/tta_ood.py", line 26
+    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 'promptalign_aug': promptalign_aug.tta_id_ood, \ 
+                                                                                                                  ^
+SyntaxError: unexpected character after line continuation character
+Traceback (most recent call last):
+  File "tta_ood_maple.py", line 150, in <module>
+    from tta_ood import tta_methods
+  File "/home/manogna/TTA/clip-owtta/tta_ood.py", line 26
+    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 'promptalign_aug': promptalign_aug.tta_id_ood, \ 
+                                                                                                                  ^
+SyntaxError: unexpected character after line continuation character
+Traceback (most recent call last):
+  File "tta_ood_maple.py", line 150, in <module>
+    from tta_ood import tta_methods
+  File "/home/manogna/TTA/clip-owtta/tta_ood.py", line 26
+    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 'promptalign_aug': promptalign_aug.tta_id_ood, \ 
+                                                                                                                  ^
+SyntaxError: unexpected character after line continuation character
+Traceback (most recent call last):
+  File "tta_ood_maple.py", line 150, in <module>
+    from tta_ood import tta_methods
+  File "/home/manogna/TTA/clip-owtta/tta_ood.py", line 26
+    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 'promptalign_aug': promptalign_aug.tta_id_ood, \ 
+                                                                                                                  ^
+SyntaxError: unexpected character after line continuation character
+Traceback (most recent call last):
+  File "tta_ood_maple.py", line 150, in <module>
+    from tta_ood import tta_methods
+  File "/home/manogna/TTA/clip-owtta/tta_ood.py", line 26
+    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 'promptalign_aug': promptalign_aug.tta_id_ood, \ 
+                                                                                                                  ^
+SyntaxError: unexpected character after line continuation character
+Traceback (most recent call last):
+  File "tta_ood_maple.py", line 150, in <module>
+    from tta_ood import tta_methods
+  File "/home/manogna/TTA/clip-owtta/tta_ood.py", line 26
+    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 'promptalign_aug': promptalign_aug.tta_id_ood, \ 
+                                                                                                                  ^
+SyntaxError: unexpected character after line continuation character
+Traceback (most recent call last):
+  File "tta_ood_maple.py", line 150, in <module>
+    from tta_ood import tta_methods
+  File "/home/manogna/TTA/clip-owtta/tta_ood.py", line 26
+    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 'promptalign_aug': promptalign_aug.tta_id_ood, \ 
+                                                                                                                  ^
+SyntaxError: unexpected character after line continuation character

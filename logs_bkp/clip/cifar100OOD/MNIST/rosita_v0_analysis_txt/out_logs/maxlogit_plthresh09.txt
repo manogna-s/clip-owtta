@@ -1,0 +1,44 @@
+
+Step 999: Top1: 0.5070; Top5: 0.7475
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.5090180360721442, 'ACC_ID': 0.32665330661322645, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 1999: Top1: 0.4995; Top5: 0.7503
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.499486125385406, 'ACC_ID': 0.3175745118191161, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 2999: Top1: 0.4856; Top5: 0.7415
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.48464619492656874, 'ACC_ID': 0.3177570093457944, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 3999: Top1: 0.4904; Top5: 0.7435
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.48969331322272497, 'ACC_ID': 0.3207642031171443, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 4999: Top1: 0.4940; Top5: 0.7462
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.49358460304731355, 'ACC_ID': 0.32598235765838013, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 5999: Top1: 0.4932; Top5: 0.7468
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.49284525790349415, 'ACC_ID': 0.33976705490848585, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 6999: Top1: 0.4855; Top5: 0.7461
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.485083189902467, 'ACC_ID': 0.34796328169822144, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 7999: Top1: 0.4812; Top5: 0.7423
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.4809559372666169, 'ACC_ID': 0.36071695294996264, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 8999: Top1: 0.4777; Top5: 0.7414
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.47738359201773833, 'ACC_ID': 0.3698447893569845, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 9999: Top1: 0.4754; Top5: 0.7395
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.47507507507507507, 'ACC_ID': 0.377977977977978, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 10999: Top1: 0.4751; Top5: 0.7389
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.4747088791848617, 'ACC_ID': 0.3864628820960699, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 11999: Top1: 0.4694; Top5: 0.7336
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.4687917222963952, 'ACC_ID': 0.3878504672897196, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 12999: Top1: 0.4682; Top5: 0.7315
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.4678687008784096, 'ACC_ID': 0.3931268300200339, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 13999: Top1: 0.4646; Top5: 0.7289
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.4643724118235042, 'ACC_ID': 0.39511637869484506, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 14999: Top1: 0.4628; Top5: 0.7269
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.46255330490405117, 'ACC_ID': 0.39792110874200426, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 15999: Top1: 0.4596; Top5: 0.7252
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.4593918157927669, 'ACC_ID': 0.39869853585283443, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 16999: Top1: 0.4592; Top5: 0.7232
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.45888718974238324, 'ACC_ID': 0.40183507822609105, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 17999: Top1: 0.4580; Top5: 0.7231
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.4576837416481069, 'ACC_ID': 0.4035634743875278, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 18999: Top1: 0.4548; Top5: 0.7203
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.45451664025356575, 'ACC_ID': 0.40316957210776544, 'ACC_OOD': 0, 'ACC_HM': 0}
+Step 19999: Top1: 0.4540; Top5: 0.7185
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0, 'FPR95': 0, 'ACC_ALL': 0.4539, 'ACC_ID': 0.4053, 'ACC_OOD': 0, 'ACC_HM': 0}
+
+Final metrics: Top-1 accuracy: 45.4100; Top-5 accuracy: 71.8500
+{'Method': 'rosita_v0_analysis_txt', 'OOD Detector': 'maxlogit_plthresh09', 'AUC': 0.948512955, 'FPR95': 0.2402, 'ACC_ALL': 0.4539, 'ACC_ID': 0.4053, 'ACC_OOD': 0.9851, 'ACC_HM': 0.5743110327963176}

@@ -9,7 +9,7 @@ ood_detectors=("maxlogit")
 for ood_detect in ${ood_detectors[@]};
     do 
         echo "$TTA_METHOD $ood_detect $CLASSIFIER_TYPE"
-        # CUDA_VISIBLE_DEVICES=${GPU_ID} python tta_ood_maple.py --dataset VisdaOOD --strong_OOD MNIST      --ood_detector ${ood_detect} --tta_method ${TTA_METHOD} --classifier_type ${CLASSIFIER_TYPE} --pl_thresh ${PL_THRESH} 
+        CUDA_VISIBLE_DEVICES=${GPU_ID} python tta_ood_maple.py --dataset VisdaOOD --strong_OOD MNIST      --ood_detector ${ood_detect} --tta_method ${TTA_METHOD} --classifier_type ${CLASSIFIER_TYPE} --pl_thresh ${PL_THRESH} 
         CUDA_VISIBLE_DEVICES=${GPU_ID} python tta_ood_maple.py --dataset VisdaOOD --strong_OOD SVHN       --ood_detector ${ood_detect} --tta_method ${TTA_METHOD} --classifier_type ${CLASSIFIER_TYPE} --pl_thresh ${PL_THRESH}
         CUDA_VISIBLE_DEVICES=${GPU_ID} python tta_ood_maple.py --dataset ImagenetROOD --strong_OOD MNIST  --ood_detector ${ood_detect} --tta_method ${TTA_METHOD} --classifier_type ${CLASSIFIER_TYPE} --pl_thresh ${PL_THRESH}
         CUDA_VISIBLE_DEVICES=${GPU_ID} python tta_ood_maple.py --dataset ImagenetROOD --strong_OOD SVHN   --ood_detector ${ood_detect} --tta_method ${TTA_METHOD} --classifier_type ${CLASSIFIER_TYPE} --pl_thresh ${PL_THRESH}

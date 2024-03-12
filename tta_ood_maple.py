@@ -16,7 +16,8 @@ from clip import clip
 from clip import tokenize
 from clip.simple_tokenizer import SimpleTokenizer as _Tokenizer
 
-from models.maple import CustomCLIP
+from models.maple import CustomCLIP_MaPLe
+from models.coop import CustomCLIP_CoOp
 
 from utils.data_utils import prepare_ood_test_data, AugMixAugmenter
 from utils.clip_tta_utils import get_classifiers
@@ -42,6 +43,25 @@ def load_maple_to_cpu():
 
     return model
 
+def load_coop_to_cpu():
+    url = clip._MODELS['ViT-B/16']
+    model_path = clip._download(url)
+
+    try:
+        # loading JIT archive
+        model = torch.jit.load(model_path, map_location="cpu").eval()
+        state_dict = None
+
+    except RuntimeError:
+        state_dict = torch.load(model_path, map_location="cpu")
+    design_details = {"trainer": 'CoOp',
+                      "vision_depth": 0,
+                      "language_depth": 0, "vision_ctx": 0,
+                      "language_ctx": 0}
+    model = clip.build_model(state_dict or model.state_dict(), design_details)
+
+    return model
+
 
 def get_model(args, classnames):
 
@@ -49,7 +69,7 @@ def get_model(args, classnames):
 
         clip_model = load_maple_to_cpu()
 
-        model = CustomCLIP(classnames, clip_model)
+        model = CustomCLIP_MaPLe(classnames, clip_model)
 
         checkpoint = torch.load('/home/manogna/TTA/PromptAlign/weights/maple/ori/seed1/MultiModalPromptLearner/model.pth.tar-2')
         state_dict = checkpoint["state_dict"]
@@ -66,7 +86,12 @@ def get_model(args, classnames):
 
         model.cuda()
 
-        return model
+    if args.model == 'coop':
+        clip_model = load_coop_to_cpu()
+
+        model = CustomCLIP_CoOp(classnames, clip_model)
+
+    return model
 
 
 def zeroshot_classifier_maple(model, classnames, templates, ensemble=False):
@@ -141,7 +166,12 @@ parser.add_argument('--seed', default=0, type=int)
 parser.add_argument('--ood_detector', default='maxlogit', type=str)
 parser.add_argument('--tta_method', default='zsclip', type=str)
 parser.add_argument('--pl_thresh', default=0.6, type=float)
+parser.add_argument('--alpha', default=0.5, type=float)
 parser.add_argument('--classifier_type', default='txt', type=str)
+parser.add_argument('--k_p', default=3, type=int)
+parser.add_argument('--k_n', default=10, type=int)
+parser.add_argument('--loss_pl', default=1, type=int)
+parser.add_argument('--loss_simclr', default=1, type=int)
 
 
 
