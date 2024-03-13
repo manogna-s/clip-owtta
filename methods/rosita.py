@@ -223,7 +223,6 @@ def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
     metrics_exp['ACC_ID'] = n_samples['ID']/n_samples['ID_total']
     metrics_exp['ACC_OOD'] = n_samples['OOD_det']/n_samples['OOD_total']
         
-    ood_scores = np.array(ood_scores)
     ood_data['ood_scores'] = np.array(ood_data['ood_scores'])
     metrics_exp['AUC'], metrics_exp['FPR95'] = cal_auc_fpr(ood_data['ood_scores'][ood_data['ID']], ood_data['ood_scores'][ood_data['OOD']])
     metrics_exp['ACC_HM'] = HM(metrics_exp['ACC_ID'], metrics_exp['ACC_OOD'])

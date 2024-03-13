@@ -1,2 +1,0 @@
-Method,AUC,FPR95,ACC_ALL,ACC_ID,ACC_OOD,ACC_HM,kp,kn,alpha,loss_pl,loss_simclr,OOD Detector
-rosita_loss_cupl,0.853344375,0.5974,0.7833,0.6585,0.8049,0.7243769987699876,3,10,0.5,1,0,maxlogit

@@ -106,7 +106,7 @@ class PromptLearner(nn.Module):
         self.n_ctx = n_ctx
         self.tokenized_prompts = tokenized_prompts  # torch.Tensor
         self.name_lens = name_lens
-        self.class_token_position = 'front'
+        self.class_token_position = 'end'
 
     def forward(self):
         ctx = self.ctx

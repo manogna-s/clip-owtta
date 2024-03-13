@@ -1,2 +1,0 @@
-Method,AUC,FPR95,ACC_ALL,ACC_ID,ACC_OOD,ACC_HM,kp,kn,alpha,loss_pl,loss_simclr,OOD Detector
-rosita_knn_txt,0.9603711300000001,0.2775,0.7762,0.7165,0.9963,0.8335461816907986,3,3,0.5,1,1,maxlogit
