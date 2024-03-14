@@ -82,7 +82,7 @@ def promptalign_test_time_tuning(model, inputs, optimizer, scaler):
 
 
 @METHODS_REGISTRY.register()
-def PromptAlign(args, model, ID_OOD_loader, ID_classifiers):
+def PromptAlignContinual(args, model, ID_OOD_loader, ID_classifiers):
 
     tta_method = f'{args.tta_method}_{args.classifier_type}' 
     ood_thresh = 'otsu'
@@ -121,7 +121,9 @@ def PromptAlign(args, model, ID_OOD_loader, ID_classifiers):
             param.requires_grad_(False)
     
     trainable_param = model.prompt_learner.parameters()
-    optimizer = torch.optim.AdamW(trainable_param, lr=4e-2)
+    # optimizer = torch.optim.AdamW(trainable_param, lr=4e-2)
+    optimizer = torch.optim.SGD(trainable_param, lr=0.002, momentum=0.9)
+    print(optimizer)
     optim_state = deepcopy(optimizer.state_dict())
     scaler = torch.cuda.amp.GradScaler(init_scale=1000)
 

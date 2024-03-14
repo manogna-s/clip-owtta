@@ -1,2 +1,0 @@
-Method,OOD Detector,AUC,FPR95,ACC_ALL,ACC_ID,ACC_OOD,ACC_HM
-ft_pl_neg_proto_bank_v2_txt,msp_plthresh07,0.96462524,0.2277,0.8484,0.7856,0.9706,0.8683559503473408

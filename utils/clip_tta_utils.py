@@ -27,18 +27,23 @@ def zeroshot_classifier(model, classnames, templates, ensemble=False):
     with torch.no_grad():
         zeroshot_weights = []
         for classname in classnames:
-            texts = [template.format(classname) for template in templates] #format with class
-            texts = clip.tokenize(texts).cuda() #tokenize
-            class_embeddings = model.encode_text(texts) #embed with text encoder
-            class_embeddings /= class_embeddings.norm(dim=-1, keepdim=True)
             if ensemble:
+                texts = [template.format(classname) for template in templates] #format with class
+                texts = clip.tokenize(texts).cuda() #tokenize
+                class_embeddings = model.encode_text(texts) #embed with text encoder
+                class_embeddings /= class_embeddings.norm(dim=-1, keepdim=True)
                 class_embedding = class_embeddings.mean(dim=0)
                 class_embedding /= class_embedding.norm()
             else:
-                class_embedding = class_embeddings[0]
+                template = 'a photo of a {}.'
+                texts = [template.format(classname)]
+                texts = clip.tokenize(texts).cuda()
+                class_embeddings = model.encode_text(texts) #embed with text encoder
+                class_embedding = class_embeddings
                 class_embedding /= class_embedding.norm()
             zeroshot_weights.append(class_embedding)
         zeroshot_weights = torch.stack(zeroshot_weights, dim=0).cuda()
+        zeroshot_weights = zeroshot_weights.squeeze()
     return zeroshot_weights
 
 
@@ -121,32 +126,36 @@ def eval_clip(features, labels, classifier):
 
 
 # TEXT CLASSIFIER
-def get_classifiers(model, classes, templates, prompt_dict):
+def get_classifiers(args, model, classes, templates, prompt_dict):
     classifiers = {}
-    classifiers['txt'] = zeroshot_classifier(model, classes, templates, ensemble=False)
+    if args.model == 'clip':
+        classifiers['txt'] = zeroshot_classifier(model, classes, templates, ensemble=False)
 
-    # ENSEMBLE CLASSIFIER
-    classifiers['ens'] = zeroshot_classifier(model, classes, templates, ensemble=True)
+        # ENSEMBLE CLASSIFIER
+        # classifiers['ens'] = zeroshot_classifier(model, classes, templates, ensemble=True)
 
-    # CUPL CLASSIFIER
-    prompt_dict = {k.lower().replace("_", " "): v for k, v in prompt_dict.items()}
+        # CUPL CLASSIFIER
+        # prompt_dict = {k.lower().replace("_", " "): v for k, v in prompt_dict.items()}
 
-    classifier_cupl = []
-    k=0
-    for single_key in classes:
-        single_class_prompts = prompt_dict[single_key.lower().replace("_", " ")]
-        k += 1
-        x_tokenized = torch.cat([clip.tokenize(p) for p in single_class_prompts])
-        with torch.no_grad():
-            text_features = model.encode_text(x_tokenized.cuda())
-        text_features = text_features / text_features.norm(dim=-1, keepdim=True)
-        classifier_cupl.append(text_features.mean(0).unsqueeze(0))
-    classifier_cupl = torch.cat(classifier_cupl, dim=0)
-    classifiers['cupl'] = classifier_cupl / classifier_cupl.norm(dim=-1, keepdim=True)
+        # classifier_cupl = []
+        # k=0
+        # for single_key in classes:
+        #     single_class_prompts = prompt_dict[single_key.lower().replace("_", " ")]
+        #     k += 1
+        #     x_tokenized = torch.cat([clip.tokenize(p) for p in single_class_prompts])
+        #     with torch.no_grad():
+        #         text_features = model.encode_text(x_tokenized.cuda())
+        #     text_features = text_features / text_features.norm(dim=-1, keepdim=True)
+        #     classifier_cupl.append(text_features.mean(0).unsqueeze(0))
+        # classifier_cupl = torch.cat(classifier_cupl, dim=0)
+        # classifiers['cupl'] = classifier_cupl / classifier_cupl.norm(dim=-1, keepdim=True)
 
-    # ENSEMBLE CUPL CLASSIFIER
-    classifier_ens_cupl = torch.cat([classifiers['ens'].unsqueeze(0), classifiers['cupl'].unsqueeze(0)], dim=0).mean(0)
-    classifiers['ens_cupl'] = classifier_ens_cupl / classifier_ens_cupl.norm(dim=-1, keepdim=True)
+        # # ENSEMBLE CUPL CLASSIFIER
+        # classifier_ens_cupl = torch.cat([classifiers['ens'].unsqueeze(0), classifiers['cupl'].unsqueeze(0)], dim=0).mean(0)
+        # classifiers['ens_cupl'] = classifier_ens_cupl / classifier_ens_cupl.norm(dim=-1, keepdim=True)
+
+    elif args.model == 'coop' or args.model =='maple':
+        classifiers['txt'] = model.get_text_features().detach()
 
     return classifiers
 

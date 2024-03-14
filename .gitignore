@@ -1,5 +1,8 @@
 #Folders
-logs
+logs/
+# logs/*/*/*/*/ood_scores/*.npy
+# logs/bkp_old
+weights
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

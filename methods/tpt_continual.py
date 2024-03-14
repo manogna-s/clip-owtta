@@ -34,22 +34,7 @@ def avg_entropy(outputs):
     return -(avg_logits * torch.exp(avg_logits)).sum(dim=-1)
 
 
-def distr_align_loss(out_feat, targ_feat, layers_from=0, layers_to=12, moments=5):
-    '''
-    A feature distibution alignment L1 loss between mean and variance of the features
-    '''
-    distr_loss = 0
-    out_means, out_vars = out_feat
-    targ_means, targ_vars = targ_feat
-    transf_layers = layers_to
-    for l in range(layers_from, transf_layers-1):
-        out_mean, out_var = out_means[l], out_vars[l]
-        targ_mean, targ_var = targ_means[l], targ_vars[l]
-        distr_loss += 0.5 * F.l1_loss(out_mean, targ_mean) + 0.5 * F.l1_loss(out_var, targ_var)
-    return distr_loss
-    
-    
-def promptalign_test_time_tuning(model, inputs, optimizer, scaler):
+def tpt_test_time_tuning(model, inputs, optimizer, scaler):
 
     selected_idx = None
     DISTR_LOSS_W = 100.0
@@ -60,16 +45,6 @@ def promptalign_test_time_tuning(model, inputs, optimizer, scaler):
             output, selected_idx = select_confident_samples(output, TPT_THRESHOLD, ALIGN_THRESHOLD)
 
             loss = avg_entropy(output)
-
-            # Only selected indexes
-            target_feat_distr = (visual_means, visual_vars)
-            out_visual_mean = torch.cat([torch.mean(res.visual_feat[:, selected_idx, :], dim=1, keepdims=True).permute(1,0,2) for res in model.image_encoder.transformer.resblocks])
-            out_visual_var = torch.cat([torch.mean(((res.visual_feat[:, selected_idx, :] - out_visual_mean[i, :, :].unsqueeze(0).permute(1,0,2))**2), dim=1, keepdims=True).permute(1,0,2) for i, res in enumerate(model.image_encoder.transformer.resblocks)])
-            out_feat_distr = (out_visual_mean, out_visual_var)
-        
-            DISTR_LOSS_W = DISTR_LOSS_W / (ALIGN_LAYER_TO - ALIGN_LAYER_FROM)
-            loss += DISTR_LOSS_W * distr_align_loss(out_feat_distr, target_feat_distr, 
-                                        layers_from=ALIGN_LAYER_FROM, layers_to=ALIGN_LAYER_TO)
         
         optimizer.zero_grad()
         # compute gradient and do SGD step
@@ -82,7 +57,7 @@ def promptalign_test_time_tuning(model, inputs, optimizer, scaler):
 
 
 @METHODS_REGISTRY.register()
-def PromptAlign(args, model, ID_OOD_loader, ID_classifiers):
+def TPTContinual(args, model, ID_OOD_loader, ID_classifiers):
 
     tta_method = f'{args.tta_method}_{args.classifier_type}' 
     ood_thresh = 'otsu'
@@ -112,6 +87,7 @@ def PromptAlign(args, model, ID_OOD_loader, ID_classifiers):
     ood_data = {'ID': [], 'OOD': [], 'gt_idx': [], 'ood_scores': []}
 
     top1, top5, n = 0, 0, 0
+    ood_scores = []
     scores_q = []
     queue_length = args.N_m
 
@@ -119,12 +95,15 @@ def PromptAlign(args, model, ID_OOD_loader, ID_classifiers):
     for nm, param in model.named_parameters():
         if "prompt_learner" not in nm:
             param.requires_grad_(False)
-    
+            
     trainable_param = model.prompt_learner.parameters()
-    optimizer = torch.optim.AdamW(trainable_param, lr=4e-2)
+    # optimizer = torch.optim.AdamW(trainable_param, lr=4e-2)
+    optimizer = torch.optim.SGD(trainable_param, lr=0.002, momentum=0.9)
+    print(optimizer)
     optim_state = deepcopy(optimizer.state_dict())
     scaler = torch.cuda.amp.GradScaler(init_scale=1000)
 
+    model.eval()
 
     for i, (images, gt) in enumerate(ID_OOD_loader):
         images = images[:-1]
@@ -140,9 +119,9 @@ def PromptAlign(args, model, ID_OOD_loader, ID_classifiers):
         ood_data['OOD'].append((gt>=1000).item())
         ood_data['gt_idx'].append(gt.item())
         
-        #TPT
-        with torch.no_grad():
-            model.reset()
+        #TPT for continuous update: No reset
+        # with torch.no_grad():
+            # model.reset()
         
         # TTA
         image_features = model.encode_image(image)
@@ -169,8 +148,8 @@ def PromptAlign(args, model, ID_OOD_loader, ID_classifiers):
         ID_sel = ID_pred * (msp > args.pl_thresh) 
 
         if ID_pred[0].item():    
-            optimizer.load_state_dict(optim_state)
-            model = promptalign_test_time_tuning(model, images, optimizer, scaler)
+            # optimizer.load_state_dict(optim_state) #for continuous update
+            model = tpt_test_time_tuning(model, images, optimizer, scaler)
 
 
         # metrics
@@ -180,7 +159,7 @@ def PromptAlign(args, model, ID_OOD_loader, ID_classifiers):
         n_samples['OOD_total'] += torch.sum(OOD_curr).item()
 
         with torch.no_grad():
-            with torch.cuda.amp.autocast():
+            with torch.cuda.amp.autocast():                
                 imf_norm = model.encode_image(image)
                 imf_norm = imf_norm/imf_norm.norm(dim=-1, keepdim=True)
                 tta_classifier = model.get_text_features().detach()
@@ -238,3 +217,5 @@ def PromptAlign(args, model, ID_OOD_loader, ID_classifiers):
     plt.savefig(f'{log_dir_path}/ood_scores/{name}.jpg')
 
     return metrics_exp
+
+

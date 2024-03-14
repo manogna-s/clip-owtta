@@ -219,7 +219,7 @@ class MultiModalPromptLearner(nn.Module):
         self.compound_prompt_projections_init_state = [(module.weight.detach().clone(), module.bias.detach().clone()) for module in self.compound_prompt_projections]
 
 
-class CustomCLIP(nn.Module):
+class CustomCLIP_MaPLe(nn.Module):
     def __init__(self, classnames, clip_model):
         super().__init__()
         self.prompt_learner = MultiModalPromptLearner(classnames, clip_model)

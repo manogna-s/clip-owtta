@@ -1,2 +1,0 @@
-Method,OOD Detector,AUC,FPR95,ACC_ALL,ACC_ID,ACC_OOD,ACC_HM
-ft_pl_neg_proto_bank_v0_txt,maxlogit_plthresh07,0.69306238,0.8381,0.5134,0.3787,0.6754,0.48529357745944407
