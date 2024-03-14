@@ -115,6 +115,7 @@ def ZSEval(args, model, ID_OOD_loader, ID_classifiers):
     print(f'Metrics: {metrics_exp}\n')
 
     print(f"Online evaluation: Top-1 accuracy: {top1:.4f}; Top-5 accuracy: {top5:.4f}")
+    print("---------------------------------------------------------------------------")
 
     name = f'{ood_detect}'
 

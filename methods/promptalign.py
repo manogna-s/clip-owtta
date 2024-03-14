@@ -84,7 +84,6 @@ def promptalign_test_time_tuning(model, inputs, optimizer, scaler):
 @METHODS_REGISTRY.register()
 def PromptAlign(args, model, ID_OOD_loader, ID_classifiers):
 
-    classifier = ID_classifiers[args.classifier_type]
     tta_method = f'{args.tta_method}_{args.classifier_type}' 
     ood_thresh = 'otsu'
     ood_detect = args.ood_detector
@@ -113,7 +112,6 @@ def PromptAlign(args, model, ID_OOD_loader, ID_classifiers):
     ood_data = {'ID': [], 'OOD': [], 'gt_idx': [], 'ood_scores': []}
 
     top1, top5, n = 0, 0, 0
-    ood_scores = []
     scores_q = []
     queue_length = args.N_m
 
@@ -150,7 +148,8 @@ def PromptAlign(args, model, ID_OOD_loader, ID_classifiers):
         image_features = model.encode_image(image)
         image_features = image_features/image_features.norm(dim=-1, keepdim=True)
 
-        logits = image_features @ classifier.T
+        tta_classifier = model.get_text_features()
+        logits = image_features @ tta_classifier.T
         maxlogit_tta, pred_tta = logits.max(1)
         msp, _ = (logits * 100).softmax(1).max(1)
         energy = torch.logsumexp(logits * 100, 1)/100
@@ -184,7 +183,8 @@ def PromptAlign(args, model, ID_OOD_loader, ID_classifiers):
             with torch.cuda.amp.autocast():
                 imf_norm = model.encode_image(image)
                 imf_norm = imf_norm/imf_norm.norm(dim=-1, keepdim=True)
-                logits_txt =  (imf_norm @ classifier.T)
+                tta_classifier = model.get_text_features().detach()
+                logits_txt =  (imf_norm @ tta_classifier.T)
                 scores_txt = (logits_txt * 100).softmax(1)
                 _, pred_tta = torch.max(scores_txt, dim=1)
 
@@ -222,6 +222,7 @@ def PromptAlign(args, model, ID_OOD_loader, ID_classifiers):
     print(args.dataset, args.strong_OOD, tta_method, ood_detect)
     status_log = f"\n\nFinal metrics: Top-1 accuracy: {top1:.4f}; Top-5 accuracy: {top5:.4f}\n{metrics_exp}"
     print(status_log)
+    print("---------------------------------------------------------------------------")
     log_file.write(status_log)
 
     # Save all metrics and scores

@@ -170,7 +170,7 @@ class VISDA(torch.utils.data.Dataset):
         self.label_files = label_files
         self.transform = transform
 
-        self.samples = self.build_index(label_file=label_files, tesize=10000) 
+        self.samples = self.build_index(label_file=label_files, tesize=tesize) 
 
     def build_index(self, label_file, tesize):
         """Build a list of <image path, class label, domain name> items.

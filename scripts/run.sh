@@ -1,4 +1,4 @@
-#sh run.sh maple ZSEval txt 0
+#sh scripts/run.sh maple ZSEval txt 0
 
 MODEL=$1
 TTA_METHOD=$2

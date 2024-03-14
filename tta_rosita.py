@@ -16,14 +16,10 @@ from models.coop import CustomCLIP_CoOp
 from utils.data_utils import prepare_ood_test_data, AugMixAugmenter
 from utils.clip_tta_utils import get_classifiers
 
-from methods import zseval, tpt, promptalign, rosita
+from methods import zseval, tpt, tpt_continual, promptalign, promptalign_continual, rosita
 
 from utils.registry import get_method
 
-
-# tta_methods = {'zseval': zseval.tta_id_ood, 
-#     'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 
-#     'rosita': rosita.tta_id_ood}
 
 
 def load_model_to_cpu(args):

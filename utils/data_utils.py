@@ -89,6 +89,22 @@ def get_weak_ood_data(args, te_transforms, tesize=10000):
             data_dict['ID_class_descriptions'][classname] = imagenet_descriptions[classname]
 
         weak_ood_dataset = ImageNetR(root= args.dataroot, transform=te_transforms, train=True, tesize=tesize)
+        
+    elif args.dataset == 'ImagenetR30kOOD':
+
+        ID_dataset = 'imagenetr'
+        imagenet_descriptions = json.load(open(f'{args.dataroot}/prompt_templates/imagenetr_prompts_full.json'))
+
+        testset = ImageNetR(root= args.dataroot)
+        print(testset.classnames)
+        data_dict['ID_classes'] = testset.classnames
+        data_dict['N_classes'] = len(data_dict['ID_classes'])
+        data_dict['templates'] = imagenet_templates
+        data_dict['ID_class_descriptions'] = {}
+        for classname in data_dict['ID_classes']:
+            data_dict['ID_class_descriptions'][classname] = imagenet_descriptions[classname]
+
+        weak_ood_dataset = ImageNetR(root= args.dataroot, transform=te_transforms, train=True, tesize=30000)
 
     elif args.dataset == "VisdaOOD":
         ID_dataset = 'visda'
@@ -99,6 +115,15 @@ def get_weak_ood_data(args, te_transforms, tesize=10000):
 
         weak_ood_dataset = VISDA(root= f'{args.dataroot}/visda-2017', label_files=f'{args.dataroot}/visda-2017/validation_list.txt' , transform=te_transforms, tesize=tesize)
 
+    elif args.dataset == "Visda50kOOD":
+        ID_dataset = 'visda'
+        data_dict['ID_class_descriptions'] = json.load(open(f'{args.dataroot}/prompt_templates/{ID_dataset}_prompts_full.json'))
+        data_dict['ID_classes'] = list(data_dict['ID_class_descriptions'].keys())
+        data_dict['N_classes'] = len(data_dict['ID_classes'])
+        data_dict['templates'] = cifar_templates
+
+        weak_ood_dataset = VISDA(root= f'{args.dataroot}/visda-2017', label_files=f'{args.dataroot}/visda-2017/validation_list.txt' , transform=te_transforms, tesize=50000)
+        
     elif args.dataset == 'ImagenetCOOD':
         ID_dataset = 'imagenetc'
 
@@ -116,7 +141,7 @@ def get_weak_ood_data(args, te_transforms, tesize=10000):
 def get_strong_ood_data(args, te_transforms, tesize=10000):
 
     if args.strong_OOD == 'MNIST':
-        te_rize = transforms.Compose([transforms.Resize(size=(32, 32)), transforms.Grayscale(3), te_transforms ])
+        te_rize = transforms.Compose([transforms.Grayscale(3), te_transforms ])
         strong_ood_dataset = MNIST_openset(root=args.dataroot,
                     train=True, download=True, transform=te_rize, tesize=tesize, ratio=args.strong_ratio)
     

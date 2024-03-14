@@ -231,6 +231,7 @@ def Rosita(args, model, ID_OOD_loader, ID_classifiers):
     print(args.dataset, args.strong_OOD, tta_method, ood_detect)
     status_log = f"\n\nFinal metrics: Top-1 accuracy: {top1:.4f}; Top-5 accuracy: {top5:.4f}\n{metrics_exp}"
     print(status_log)
+    print("---------------------------------------------------------------------------")
     log_file.write(status_log)
 
     # Save all metrics and scores
