@@ -8,6 +8,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from utils.clip_tta_utils import compute_os_variance, accuracy, cal_auc_fpr, HM, get_ln_params
 from torch.nn import functional as F
+from utils.registry import METHODS_REGISTRY
+
 
 TPT_THRESHOLD = 0.1
 ALIGN_THRESHOLD = 0.1
@@ -53,7 +55,9 @@ def tpt_test_time_tuning(model, inputs, optimizer, scaler):
 
     return model
 
-def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
+
+@METHODS_REGISTRY.register()
+def TPT(args, model, ID_OOD_loader, ID_classifiers):
 
     classifier = ID_classifiers[args.classifier_type]
     tta_method = f'{args.tta_method}_{args.classifier_type}' 

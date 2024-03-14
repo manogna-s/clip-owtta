@@ -1,3 +1,5 @@
+#sh run.sh maple ZSEval txt 0
+
 MODEL=$1
 TTA_METHOD=$2
 CLASSIFIER_TYPE=$3

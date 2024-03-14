@@ -16,11 +16,14 @@ from models.coop import CustomCLIP_CoOp
 from utils.data_utils import prepare_ood_test_data, AugMixAugmenter
 from utils.clip_tta_utils import get_classifiers
 
-
 from methods import zseval, tpt, promptalign, rosita
-tta_methods = {'zseval': zseval.tta_id_ood, 
-    'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 
-    'rosita': rosita.tta_id_ood}
+
+from utils.registry import get_method
+
+
+# tta_methods = {'zseval': zseval.tta_id_ood, 
+#     'tpt': tpt.tta_id_ood, 'promptalign': promptalign.tta_id_ood, 
+#     'rosita': rosita.tta_id_ood}
 
 
 def load_model_to_cpu(args):
@@ -121,7 +124,7 @@ parser.add_argument('--model', default='clip', help='resnet50')
 parser.add_argument('--model_type', default='ViT-B/16', help='resnet50')
 parser.add_argument('--seed', default=0, type=int)
 parser.add_argument('--ood_detector', default='maxlogit', type=str)
-parser.add_argument('--tta_method', default='zsclip', type=str)
+parser.add_argument('--tta_method', default='ZSEval', type=str)
 parser.add_argument('--pl_thresh', default=0.7, type=float)
 parser.add_argument('--alpha', default=0.5, type=float)
 parser.add_argument('--classifier_type', default='txt', type=str)
@@ -142,6 +145,11 @@ if __name__ == "__main__":
     print(args)
     print('\n')
 
+    if args.tta_method == 'TPT':
+        assert args.model in ['coop', 'maple'], "TPT is supported with CoOp and MaPLe models only but not CLIP"
+    if args.tta_method == 'PromptAlign':
+        assert args.model =='maple', "PromptAlign is supported with MaPLe only."
+
     torch.manual_seed(args.seed)
     random.seed(args.seed)
     np.random.seed(args.seed)
@@ -157,6 +165,9 @@ if __name__ == "__main__":
 
     ID_classifiers = get_classifiers(args, model, data_dict['ID_classes'], data_dict['templates'], data_dict['ID_class_descriptions'])
 
-    result_metrics = tta_methods[args.tta_method](args, model, test_loader, ID_classifiers)
+    method = get_method(args.tta_method)
+    result_metrics = method(args, model, test_loader, ID_classifiers)
+
+    # result_metrics = tta_methods[args.tta_method](args, model, test_loader, ID_classifiers)
 
     print('\n\n\n')

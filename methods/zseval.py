@@ -5,9 +5,10 @@ import json
 import pandas as pd
 import matplotlib.pyplot as plt
 from utils.clip_tta_utils import compute_os_variance, accuracy, cal_auc_fpr, HM
+from utils.registry import METHODS_REGISTRY
 
-
-def tta_id_ood(args, model, ID_OOD_loader, ID_classifiers):
+@METHODS_REGISTRY.register()
+def ZSEval(args, model, ID_OOD_loader, ID_classifiers):
 
     classifier = ID_classifiers[args.classifier_type]
     tta_method = f'{args.tta_method}_{args.classifier_type}'   
