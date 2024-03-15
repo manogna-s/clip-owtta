@@ -177,7 +177,8 @@ class CustomImageFolder(CustomDatasetFolder):
         super(CustomImageFolder, self).__init__(root, loader, IMG_EXTENSIONS if is_valid_file is None else None,
                                                 transform=transform,
                                                 target_transform=target_transform,
-                                                is_valid_file=is_valid_file)
+                                                is_valid_file=is_valid_file,
+                                                tesize=tesize)
 
         self.imgs = self.samples
 

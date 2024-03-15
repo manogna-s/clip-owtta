@@ -155,7 +155,8 @@ def get_classifiers(args, model, classes, templates, prompt_dict):
         # classifiers['ens_cupl'] = classifier_ens_cupl / classifier_ens_cupl.norm(dim=-1, keepdim=True)
 
     elif args.model == 'coop' or args.model =='maple':
-        classifiers['txt'] = model.get_text_features().detach()
+        with torch.no_grad():
+            classifiers['txt'] = model.get_text_features().detach()
 
     return classifiers
 
