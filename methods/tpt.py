@@ -96,7 +96,9 @@ def TPT(args, model, ID_OOD_loader, ID_classifiers):
             param.requires_grad_(False)
             
     trainable_param = model.prompt_learner.parameters()
-    optimizer = torch.optim.AdamW(trainable_param, lr=4e-2)
+    lr = {'coop': 0.005, 'maple': 4e-2}
+    optimizer = torch.optim.AdamW(trainable_param, lr=lr[args.model])
+    print(optimizer)
     optim_state = deepcopy(optimizer.state_dict())
     scaler = torch.cuda.amp.GradScaler(init_scale=1000)
 

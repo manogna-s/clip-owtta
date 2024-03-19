@@ -61,7 +61,7 @@ def get_preprocess_transforms(args):
         transforms.ToTensor(),
         normalize,])
     
-    if args.tta_method in ['tpt', 'promptalign']:
+    if 'TPT' in args.tta_method or 'promptalign' in args.tta_method:
         base_transform = transforms.Compose([
             transforms.Resize(224, interpolation=BICUBIC),
             transforms.CenterCrop(224)])
@@ -69,7 +69,7 @@ def get_preprocess_transforms(args):
                     transforms.ToTensor(),
                     normalize])
         preprocess = AugMixAugmenter(base_transform, preprocess, n_views=args.n_views-1, 
-                                                augmix=True)
+                                                augmix=False)
 
     return preprocess
 
