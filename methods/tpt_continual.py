@@ -98,7 +98,7 @@ def TPTContinual(args, model, ID_OOD_loader, ID_classifiers):
             
     trainable_param = model.prompt_learner.parameters()
     # optimizer = torch.optim.AdamW(trainable_param, lr=4e-2)
-    optimizer = torch.optim.SGD(trainable_param, lr=0.002, momentum=0.9)
+    optimizer = torch.optim.SGD(trainable_param, lr=0.00001, momentum=0.9)
     print(optimizer)
     optim_state = deepcopy(optimizer.state_dict())
     scaler = torch.cuda.amp.GradScaler(init_scale=1000)
@@ -145,7 +145,6 @@ def TPTContinual(args, model, ID_OOD_loader, ID_classifiers):
 
         ID_curr, OOD_curr = gt<1000, gt>=1000
         ID_pred, OOD_pred = ood_score[ood_detect] >= best_thresh, ood_score[ood_detect] < best_thresh
-        ID_sel = ID_pred * (msp > args.pl_thresh) 
 
         if ID_pred[0].item():    
             # optimizer.load_state_dict(optim_state) #for continuous update

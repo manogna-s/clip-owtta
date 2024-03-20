@@ -144,9 +144,8 @@ def TPT(args, model, ID_OOD_loader, ID_classifiers):
 
         ID_curr, OOD_curr = gt<1000, gt>=1000
         ID_pred, OOD_pred = ood_score[ood_detect] >= best_thresh, ood_score[ood_detect] < best_thresh
-        ID_sel = ID_pred * (msp > args.pl_thresh) 
-
-        if ID_pred[0].item():    
+        
+        if ID_pred[0].item():     
             optimizer.load_state_dict(optim_state)
             model = tpt_test_time_tuning(model, images, optimizer, scaler)
 

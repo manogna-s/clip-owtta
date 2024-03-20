@@ -61,7 +61,7 @@ def get_preprocess_transforms(args):
         transforms.ToTensor(),
         normalize,])
     
-    if 'TPT' in args.tta_method or 'promptalign' in args.tta_method:
+    if 'TPT' in args.tta_method or 'PromptAlign' in args.tta_method:
         base_transform = transforms.Compose([
             transforms.Resize(224, interpolation=BICUBIC),
             transforms.CenterCrop(224)])
