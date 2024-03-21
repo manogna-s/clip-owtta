@@ -145,15 +145,15 @@ def PromptAlignContinual(args, model, ID_OOD_loader, ID_classifiers):
         ood_data['gt_idx'].append(gt.item())
         
         #PromptAlign for continuous update: No reset
-        # with torch.no_grad():
+        with torch.no_grad():
             # model.reset()
         
-        # TTA
-        image_features = model.encode_image(image)
-        image_features = image_features/image_features.norm(dim=-1, keepdim=True)
+            # TTA
+            image_features = model.encode_image(image)
+            image_features = image_features/image_features.norm(dim=-1, keepdim=True)
 
-        tta_classifier = model.get_text_features()
-        logits = image_features @ tta_classifier.T
+            tta_classifier = model.get_text_features()
+            logits = image_features @ tta_classifier.T
         maxlogit_tta, pred_tta = logits.max(1)
         msp, _ = (logits * 100).softmax(1).max(1)
         energy = torch.logsumexp(logits * 100, 1)/100

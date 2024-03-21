@@ -98,7 +98,8 @@ def TPTContinual(args, model, ID_OOD_loader, ID_classifiers):
             
     trainable_param = model.prompt_learner.parameters()
     # optimizer = torch.optim.AdamW(trainable_param, lr=4e-2)
-    optimizer = torch.optim.SGD(trainable_param, lr=0.00001, momentum=0.9)
+    optimizer = torch.optim.SGD(trainable_param, lr=0.00001) #, momentum=0.9)
+    log_file.write(f'{optimizer}')
     print(optimizer)
     optim_state = deepcopy(optimizer.state_dict())
     scaler = torch.cuda.amp.GradScaler(init_scale=1000)
