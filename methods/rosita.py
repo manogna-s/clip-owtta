@@ -63,7 +63,7 @@ def Rosita(args, model, ID_OOD_loader, ID_classifiers):
     tta_method = f'{args.tta_method}_{args.classifier_type}' 
     ood_thresh = 'otsu'
     ood_detect = args.ood_detector
-    name = f'{ood_detect}_alpha{int(args.alpha*10)}_kp{args.k_p}_kn{args.k_n}'
+    name = f'{ood_detect}' #_alpha{int(args.alpha*10)}_kp{args.k_p}_kn{args.k_n}'
 
 
     log_dir_path = os.path.join(args.out_dir, args.model, args.dataset, args.strong_OOD, tta_method)
@@ -87,7 +87,6 @@ def Rosita(args, model, ID_OOD_loader, ID_classifiers):
     ood_data = {'ID': [], 'OOD': [], 'gt_idx': [], 'ood_scores': []}
 
     top1, top5, n = 0, 0, 0
-    ood_scores = []
     scores_q = []
     queue_length = args.N_m
 
@@ -175,9 +174,15 @@ def Rosita(args, model, ID_OOD_loader, ID_classifiers):
 
                 pos_sim_k = topk_pos_sim.T
                 neg_sim_k = topk_neg_sim.expand(args.k_p, -1)
+                # print(pos_sim_k.shape, topk_neg_sim.shape)
                 simclr_logits = torch.cat([pos_sim_k, neg_sim_k], dim=1)
+                # print(pos_sim_k.shape, neg_sim_k.shape, topk_neg_sim.shape, simclr_logits.shape)
 
-                l_simclr = nn.CrossEntropyLoss()(simclr_logits, torch.zeros((args.k_p,), dtype=torch.long).cuda())
+                l_simclr = -pos_sim_k + torch.log(torch.exp(neg_sim_k).sum(1))
+                l_simclr = torch.mean(l_simclr)
+                # print(l_simclr)
+
+                # l_simclr = nn.CrossEntropyLoss()(simclr_logits, torch.zeros((args.k_p,), dtype=torch.long).cuda())
                 loss += l_simclr * args.alpha
 
         if loss:
