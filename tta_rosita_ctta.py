@@ -16,9 +16,9 @@ from models.coop import CustomCLIP_CoOp
 from utils.data_utils import prepare_ood_test_data, AugMixAugmenter
 from utils.clip_tta_utils import get_classifiers
 
-from methods import zseval, tpt, tpt_continual, promptalign, promptalign_continual, rosita
+from methods_ctta import zseval, tpt, tpt_continual, promptalign, promptalign_continual, rosita
 
-from utils.registry import get_method
+from utils.registry import get_method_ctta
 
 
 
@@ -83,7 +83,7 @@ def get_model(args, classnames):
     elif args.model == 'maple':
         model = CustomCLIP_MaPLe(classnames, clip_model)
 
-        checkpoint = torch.load('/home/manogna/TTA/PromptAlign/weights/maple/ori/seed1/MultiModalPromptLearner/model.pth.tar-2')
+        checkpoint = torch.load('weights/maple/ori/seed1/MultiModalPromptLearner/model.pth.tar-2')
         state_dict = checkpoint["state_dict"]
         epoch = checkpoint["epoch"]
 
@@ -108,11 +108,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', default='cifar10OOD')
 parser.add_argument('--strong_OOD', default='MNIST')
 parser.add_argument('--strong_ratio', default=1, type=float)
-parser.add_argument('--dataroot', default="/home/manogna/TTA/PromptAlign/data/ood", help='path to dataset')
+parser.add_argument('--dataroot', default="/home/manogna/datasets", help='path to dataset')
 parser.add_argument('--batch_size', default=1, type=int)
 parser.add_argument('--n_views', default=64, type=int)
 parser.add_argument('--workers', default=4, type=int)
-parser.add_argument('--out_dir', default='./logs/baselines', help='folder to output log')
+parser.add_argument('--out_dir', default='./logs/baselines_ctta', help='folder to output log')
 parser.add_argument('--level', default=5, type=int)
 parser.add_argument('--N_m', default=512, type=int, help='queue length')
 parser.add_argument('--corruption', default='snow')
@@ -156,14 +156,20 @@ if __name__ == "__main__":
     preprocess = get_preprocess_transforms(args)
 
     data_dict, test_set, test_loader = prepare_ood_test_data(args, preprocess)
-
     model = get_model(args, data_dict['ID_classes'])
+
+    corruptions_list = ["gaussian_noise", "shot_noise", "impulse_noise", "defocus_blur", "glass_blur", "motion_blur", "zoom_blur", "snow", "frost", "fog", "brightness", "contrast", "elastic_transform", "pixelate", "jpeg_compression"]
+    ctta_loaders = {}
+    for corruption in corruptions_list:
+        args.corruption = corruption
+        data_dict, test_set, test_loader = prepare_ood_test_data(args, preprocess)
+        ctta_loaders[corruption] = test_loader
 
     ID_classifiers = get_classifiers(args, model, data_dict['ID_classes'], data_dict['templates'], data_dict['ID_class_descriptions'])
 
-    method = get_method(args.tta_method)
-    result_metrics = method(args, model, test_loader, ID_classifiers)
-
-    # result_metrics = tta_methods[args.tta_method](args, model, test_loader, ID_classifiers)
+    method = get_method_ctta(args.tta_method)
+    
+    result_metrics = method(args, model, ctta_loaders, ID_classifiers)
+    print(result_metrics[['Method', 'corruption', 'AUC', 'FPR95', 'ACC_ID', 'ACC_OOD', 'ACC_HM']])
 
     print('\n\n\n')

@@ -57,7 +57,7 @@ def tpt_test_time_tuning(model, inputs, optimizer, scaler):
 
 
 @METHODS_REGISTRY.register()
-def TPTContinual(args, model, ID_OOD_loader, ID_classifiers):
+def TPT(args, model, ctta_loaders, ID_classifiers):
 
     tta_method = f'{args.tta_method}_{args.classifier_type}' 
     ood_thresh = 'otsu'
@@ -70,6 +70,8 @@ def TPTContinual(args, model, ID_OOD_loader, ID_classifiers):
     os.makedirs(f'{log_dir_path}/n_samples', exist_ok=True)
     os.makedirs(f'{log_dir_path}/ood_scores', exist_ok=True)
     os.makedirs(f'{log_dir_path}/out_logs', exist_ok=True)
+
+    
     log_file = open(f'{log_dir_path}/out_logs/{name}.txt', 'w')
     
 
@@ -87,7 +89,6 @@ def TPTContinual(args, model, ID_OOD_loader, ID_classifiers):
     ood_data = {'ID': [], 'OOD': [], 'gt_idx': [], 'ood_scores': []}
 
     top1, top5, n = 0, 0, 0
-    ood_scores = []
     scores_q = []
     queue_length = args.N_m
 
@@ -97,9 +98,8 @@ def TPTContinual(args, model, ID_OOD_loader, ID_classifiers):
             param.requires_grad_(False)
             
     trainable_param = model.prompt_learner.parameters()
-    # optimizer = torch.optim.AdamW(trainable_param, lr=4e-2)
-    optimizer = torch.optim.SGD(trainable_param, lr=0.00001) #, momentum=0.9)
-    log_file.write(f'{optimizer}')
+    lr = {'coop': 0.005, 'maple': 4e-2}
+    optimizer = torch.optim.AdamW(trainable_param, lr=lr[args.model])
     print(optimizer)
     optim_state = deepcopy(optimizer.state_dict())
     scaler = torch.cuda.amp.GradScaler(init_scale=1000)
@@ -120,9 +120,9 @@ def TPTContinual(args, model, ID_OOD_loader, ID_classifiers):
         ood_data['OOD'].append((gt>=1000).item())
         ood_data['gt_idx'].append(gt.item())
         
-        #TPT for continuous update: No reset
+        #TPT
         with torch.no_grad():
-            # model.reset()
+            model.reset()
         
             # TTA
             image_features = model.encode_image(image)
@@ -146,9 +146,9 @@ def TPTContinual(args, model, ID_OOD_loader, ID_classifiers):
 
         ID_curr, OOD_curr = gt<1000, gt>=1000
         ID_pred, OOD_pred = ood_score[ood_detect] >= best_thresh, ood_score[ood_detect] < best_thresh
-
-        if ID_pred[0].item():    
-            # optimizer.load_state_dict(optim_state) #for continuous update
+        
+        if ID_pred[0].item():     
+            optimizer.load_state_dict(optim_state)
             model = tpt_test_time_tuning(model, images, optimizer, scaler)
 
 
@@ -159,7 +159,7 @@ def TPTContinual(args, model, ID_OOD_loader, ID_classifiers):
         n_samples['OOD_total'] += torch.sum(OOD_curr).item()
 
         with torch.no_grad():
-            with torch.cuda.amp.autocast():                
+            with torch.cuda.amp.autocast():
                 imf_norm = model.encode_image(image)
                 imf_norm = imf_norm/imf_norm.norm(dim=-1, keepdim=True)
                 tta_classifier = model.get_text_features().detach()

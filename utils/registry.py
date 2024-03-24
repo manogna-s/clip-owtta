@@ -83,9 +83,17 @@ def check_availability(requested, available):
         )
 
 METHODS_REGISTRY = Registry("METHODS")
+METHODS_CTTA_REGISTRY = Registry("METHODS_CTTA")
+
 
 def get_method(name):
     avai_trainers = METHODS_REGISTRY.registered_names()
     check_availability(name, avai_trainers)
     print("Loading trainer: {}".format(name))
     return METHODS_REGISTRY.get(name)
+
+def get_method_ctta(name):
+    avai_trainers = METHODS_CTTA_REGISTRY.registered_names()
+    check_availability(name, avai_trainers)
+    print("Loading trainer: {}".format(name))
+    return METHODS_CTTA_REGISTRY.get(name)

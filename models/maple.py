@@ -270,11 +270,11 @@ class CustomCLIP_MaPLe(nn.Module):
         return [image_features, text_features]
 
     def get_image_features(self, image):
-        tokenized_prompts = self.tokenized_prompts
-        logit_scale = self.logit_scale.exp()
+        # tokenized_prompts = self.tokenized_prompts
+        # logit_scale = self.logit_scale.exp()
 
         prompts, shared_ctx, deep_compound_prompts_text, deep_compound_prompts_vision = self.prompt_learner()
-        text_features = self.text_encoder(prompts, tokenized_prompts, deep_compound_prompts_text)
+        # text_features = self.text_encoder(prompts, tokenized_prompts, deep_compound_prompts_text)
         image_features = self.image_encoder(image.type(self.dtype), shared_ctx, deep_compound_prompts_vision)
         image_features = image_features / image_features.norm(dim=-1, keepdim=True)
 
