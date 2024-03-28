@@ -63,7 +63,7 @@ def Rosita(args, model, ID_OOD_loader, ID_classifiers):
     tta_method = f'{args.tta_method}_{args.classifier_type}' 
     ood_thresh = 'otsu'
     ood_detect = args.ood_detector
-    name = f'{ood_detect}' #_alpha{int(args.alpha*10)}_kp{args.k_p}_kn{args.k_n}'
+    name = f'{ood_detect}_queue{args.N_m}_kp{args.k_p}_kn{args.k_n}'
 
 
     log_dir_path = os.path.join(args.out_dir, args.model, args.dataset, args.strong_OOD, tta_method)
@@ -83,17 +83,18 @@ def Rosita(args, model, ID_OOD_loader, ID_classifiers):
     n_samples['ID_total'] = 0
     n_samples['OOD_total'] = 0
 
-    metrics_exp = {'Method':tta_method , 'AUC':0, 'FPR95':0, 'ACC_ALL':0, 'ACC_ID':0, 'ACC_OOD':0, 'ACC_HM':0, 'kp':args.k_p, 'kn':args.k_n, 'alpha':args.alpha, 'loss_pl':args.loss_pl, 'loss_simclr':args.loss_simclr, 'OOD Detector':ood_detect}
-    ood_data = {'ID': [], 'OOD': [], 'gt_idx': [], 'ood_scores': []}
-
     top1, top5, n = 0, 0, 0
     scores_q = []
     queue_length = args.N_m
 
+    metrics_exp = {'Method':tta_method , 'AUC':0, 'FPR95':0, 'ACC_ALL':0, 'ACC_ID':0, 'ACC_OOD':0, 'ACC_HM':0, 'kp':args.k_p, 'kn':args.k_n,'queue_length':queue_length, 'alpha':args.alpha, 'loss_pl':args.loss_pl, 'loss_simclr':args.loss_simclr, 'OOD Detector':ood_detect}
+    ood_data = {'ID': [], 'OOD': [], 'gt_idx': [], 'ood_scores': []}
+
     ln_params = get_ln_params(model)
     optimizer = torch.optim.SGD(ln_params, lr=0.001)
-
-    neg_proto = torch.zeros((1, 512)).cuda()
+    log_file.write(str(args))
+    log_file.write(str(optimizer))
+    log_file.write(f'\n Length of dataloader: {len(ID_OOD_loader)}')
 
     proto_bank = {'ID': [], 'OOD': []}
 
@@ -137,7 +138,7 @@ def Rosita(args, model, ID_OOD_loader, ID_classifiers):
         ID_curr, OOD_curr = gt<1000, gt>=1000
         ID_pred, OOD_pred = ood_score[ood_detect] >= best_thresh, ood_score[ood_detect] < best_thresh
 
-        ID_sel = ID_pred * (ood_score[ood_detect] > stats['mu1']) 
+        ID_sel = ID_pred * (ood_score[ood_detect] > stats['mu1'])
 
         loss = 0
         if ID_pred[0].item() and ood_score[ood_detect].item()>stats['mu1']:

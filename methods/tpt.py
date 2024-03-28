@@ -62,7 +62,7 @@ def TPT(args, model, ID_OOD_loader, ID_classifiers):
     tta_method = f'{args.tta_method}_{args.classifier_type}' 
     ood_thresh = 'otsu'
     ood_detect = args.ood_detector
-    name = f'{ood_detect}'
+    name = f'{ood_detect}_ratio{args.strong_ratio*100}'
     
     log_dir_path = os.path.join(args.out_dir, args.model, args.dataset, args.strong_OOD, tta_method)
     os.makedirs(log_dir_path, exist_ok=True)

@@ -16,7 +16,7 @@ from models.coop import CustomCLIP_CoOp
 from utils.data_utils import prepare_ood_test_data, AugMixAugmenter
 from utils.clip_tta_utils import get_classifiers
 
-from methods import zseval, tpt, tpt_continual, promptalign, promptalign_continual, rosita
+from methods import zseval, tpt, tpt_continual, promptalign, promptalign_continual, rosita, ftparams_closed_set
 
 from utils.registry import get_method
 
@@ -112,7 +112,7 @@ parser.add_argument('--dataroot', default="/home/manogna/TTA/PromptAlign/data/oo
 parser.add_argument('--batch_size', default=1, type=int)
 parser.add_argument('--n_views', default=64, type=int)
 parser.add_argument('--workers', default=4, type=int)
-parser.add_argument('--out_dir', default='./logs/baselines', help='folder to output log')
+parser.add_argument('--out_dir', default='./logs/analysis', help='folder to output log')
 parser.add_argument('--level', default=5, type=int)
 parser.add_argument('--N_m', default=512, type=int, help='queue length')
 parser.add_argument('--corruption', default='snow')
@@ -129,6 +129,11 @@ parser.add_argument('--k_n', default=5, type=int)
 parser.add_argument('--loss_pl', default=1, type=int)
 parser.add_argument('--loss_simclr', default=1, type=int)
 parser.add_argument('--tesize', default=10000, type=int)
+parser.add_argument('--param_group', default='ln', type=str)
+parser.add_argument('--tta_lr', default=0.001, type=float)
+parser.add_argument('--opt', default='SGD', type=str)
+
+
 
 
 

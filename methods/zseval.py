@@ -6,6 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from utils.clip_tta_utils import compute_os_variance, accuracy, cal_auc_fpr, HM
 from utils.registry import METHODS_REGISTRY
+from torchsummary import summary
 
 @METHODS_REGISTRY.register()
 def ZSEval(args, model, ID_OOD_loader, ID_classifiers):
@@ -35,7 +36,29 @@ def ZSEval(args, model, ID_OOD_loader, ID_classifiers):
     ood_scores = []
     scores_q = []
     queue_length = 512
-    for i, (image, gt) in enumerate(ID_OOD_loader):
+    
+    print(model)
+    for nm, param in model.named_parameters():
+        if "prompt_learner" not in nm:
+            param.requires_grad_(False)
+        # if "ln" in nm and "i":
+            # print(nm, param.shape, param.size())
+        # if ('image_encoder' in nm) and 'ln' in nm:
+        #     print(nm, param.shape, param.size())
+            # param.requires_grad_(True)
+        # else:
+            # param.requires_grad_(False)
+        # param.requires_grad_(True)
+        
+
+            
+    trainable_param = model.prompt_learner.parameters()
+    model_parameters = filter(lambda p: p.requires_grad, model.parameters())
+    params = sum([np.prod(p.size()) for p in model_parameters])
+    print(f"The network has {params} trainable parameters")
+    
+    from tqdm import tqdm
+    for i, (image, gt) in tqdm(enumerate(ID_OOD_loader)):
         if isinstance(image,list):
             image = image[0].cuda()
         else:
@@ -117,7 +140,7 @@ def ZSEval(args, model, ID_OOD_loader, ID_classifiers):
     print(f"Online evaluation: Top-1 accuracy: {top1:.4f}; Top-5 accuracy: {top5:.4f}")
     print("---------------------------------------------------------------------------")
 
-    name = f'{ood_detect}'
+    name = f'{ood_detect}_ratio{args.strong_ratio*100}'
 
     json.dump(n_samples, open(f'{log_dir_path}/n_samples/{name}.json', 'w'))
 
